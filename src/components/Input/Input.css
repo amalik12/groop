@@ -1,0 +1,14 @@
+.Input {
+  background: white;
+  height: 25px;
+  font-size: 16px;
+  padding: 12px 27px;
+  font-family: 'Source Sans Pro', sans-serif;
+  border: none;
+  border-top: 1px solid #c0c0c0;
+  resize: none;
+}
+
+.Input::placeholder {
+  color: #9e9e9e;
+}

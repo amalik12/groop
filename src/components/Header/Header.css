@@ -1,0 +1,31 @@
+.Header {
+  height: 57px;
+  padding-left: 27px;
+  padding-right: 27px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  flex-shrink: 0;
+}
+
+.room-info {
+  padding-bottom: 6px;
+}
+
+.room-name {
+  font-weight: bold;
+  font-size: 25px;
+  margin-right: 10px;
+}
+
+.creation-time {
+  color: #acacad;
+  font-size: 14px;
+}
+
+.Header .Avatar {
+  width: 30px;
+  height: 30px;
+  margin-right: 5px;
+}

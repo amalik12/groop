@@ -1,0 +1,38 @@
+.message-details {
+  display: inline-block;
+}
+
+.message-sender {
+  font-weight: bold;
+  font-size: 18px;
+  margin-right: 8px;
+}
+
+.message-time {
+  color: #acacad;
+  font-size: 15px;
+}
+
+.Message {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.message-anim-enter {
+  opacity: 0.01;
+}
+
+.message-anim-enter.message-anim-enter-active {
+  opacity: 1;
+  transition: 150ms;
+}
+
+.message-anim-leave {
+  opacity: 1;
+}
+
+.message-anim-leave.message-anim-leave-active {
+  opacity: 0.01;
+  transition: 150ms;
+}

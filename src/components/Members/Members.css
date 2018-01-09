@@ -1,0 +1,10 @@
+.Members {
+  display: flex;
+  align-items: center;
+}
+
+.member-count {
+  color: #acacad;
+  font-size: 15px;
+  margin-right: 9px;
+}

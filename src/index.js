@@ -1,0 +1,12 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './components/App';
+import registerServiceWorker from './registerServiceWorker';
+import { createStore } from 'redux'
+import { Provider } from 'react-redux'
+import chat from './reducers'
+let store = createStore(chat)
+
+ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById('root'));
+registerServiceWorker();
