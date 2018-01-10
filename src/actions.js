@@ -5,7 +5,7 @@
 export const ADD_MESSAGE = 'ADD_MESSAGE'
 export const SET_USER_COUNT = 'SET_USER_COUNT'
 export const SET_ROOM_INFO = 'SET_ROOM_INFO'
-export const TOGGLE_MODAL = 'TOGGLE_MODAL'
+export const LOGIN = 'LOGIN'
 
 /*
  * action creators
@@ -23,6 +23,6 @@ export function setRoomInfo(room) {
   return { type: SET_ROOM_INFO, room }
 }
 
-export function toggleModal() {
-  return { type: TOGGLE_MODAL }
+export function login() {
+  return { type: LOGIN }
 }

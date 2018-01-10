@@ -1,9 +1,21 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { toggleModal } from '../../actions';
+import { login } from '../../actions';
 import ReactModal from 'react-modal';
 import TextField from '../TextField';
 import '../Modal/Modal.css';
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    showModal: !state.isLoggedIn
+  }
+}
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    login: () => dispatch(login())
+  }
+}
 
 class LoginModal extends Component {
   constructor(props) {
@@ -14,19 +26,19 @@ class LoginModal extends Component {
     this.submit = this.submit.bind(this);
     var timer;
   }
-
+  
   handleChange(event) {
     clearTimeout(this.timer);
-    this.setState({value: event.target.value, errorText: '', enabled: false, loading: true});
+    this.setState({value: event.target.value, errorText: '', enabled: false});
     this.timer = setTimeout(this.checkUsername, 700);
   }
-
+  
   checkUsername() {
+    this.setState({ loading: true });
     if (this.state.value) {
       fetch("/api/v1/users?name=" + this.state.value, { method: 'HEAD'})
       .then(
         (result) => {
-          
           if (result.status === 200) {
             this.setState({enabled: true});
           } else {
@@ -40,17 +52,36 @@ class LoginModal extends Component {
     }
     this.setState({loading: false});
   }
-
+  
   submit() {
-    this.setState({submitted: true, showModal: false});
-  }
-
-
+    this.setState({ loading: true });
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    fetch("/login", { method: 'POST', body: JSON.stringify({ name: this.state.value }), headers: myHeaders })
+    .then((result) => { return result.json() })
+    .then(
+      (data) => {
+        if (data && data.token) {
+          localStorage.setItem('token', data.token);
+          this.setState({ submitted: true});
+          this.props.login();
+        } else {
+          this.setState({ errorText: 'An error occured.' });
+        }
+      },
+      (error) => {
+        console.log(error);
+        this.setState({ errorText: 'An error occured.' });
+      }
+    )
+    this.setState({ loading: false });
+  } 
+  
   render() {
     const loader = <div className="loader">Loading...</div>;
     return (
       <ReactModal 
-      isOpen={this.state.showModal}
+      isOpen={this.props.showModal}
       overlayClassName="modal-overlay"
       className={"modal" + (this.state.submitted ? " confirm" : "")}
       closeTimeoutMS={200}
@@ -70,4 +101,4 @@ class LoginModal extends Component {
   }
 }
 
-export default LoginModal;
+export default connect(mapStateToProps, mapDispatchToProps)(LoginModal);

@@ -35,9 +35,9 @@ class App extends Component {
     return (
       <div className="App">
       	<LoginModal />
-    	<Header />
-		<MessageList />
-    	<Input socket={socket}/>
+				<Header />
+				<MessageList />
+    		<Input socket={socket}/>
       </div>
     );
   }
