@@ -10,8 +10,8 @@ class Message extends Component {
         <Avatar />
         <div className="message-details">
         	<div className="message-info">
-        		<span className="message-sender">{this.props.name}</span>
-        		<span className="message-time"><Timestamp time={this.props.time} /></span>
+        		<span className="message-sender">{this.props.user.name}</span>
+        		<span className="message-time"><Timestamp time={this.props.creation_time} /></span>
         	</div>
         	<div className="message-text">
         		{this.props.text}

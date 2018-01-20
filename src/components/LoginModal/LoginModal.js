@@ -1,19 +1,22 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { login } from '../../actions';
+import { login, addMessages } from '../../actions';
 import ReactModal from 'react-modal';
 import TextField from '../TextField';
 import '../Modal/Modal.css';
+import ModalButton from '../Modal/ModalButton';
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    showModal: !state.isLoggedIn
+    showModal: !state.isLoggedIn,
+    room_id: state.room._id
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    login: () => dispatch(login())
+    login: () => dispatch(login()),
+    addMessages: (messages) => dispatch(addMessages(messages))
   }
 }
 
@@ -65,6 +68,7 @@ class LoginModal extends Component {
           localStorage.setItem('token', data.token);
           this.setState({ submitted: true});
           this.props.login();
+          return fetch("/api/v1/room/" + this.props.room_id + '/messages', { headers: { 'Authorization': localStorage.getItem('token') } })
         } else {
           this.setState({ errorText: 'An error occured.' });
         }
@@ -74,11 +78,26 @@ class LoginModal extends Component {
         this.setState({ errorText: 'An error occured.' });
       }
     )
+    .then(
+      (result) => {
+        if (result.status === 200) {
+          result.json().then((data) => {
+            this.props.addMessages(data);
+            this.props.socket.open();
+          })
+        } else {
+          console.log('Error retrieving messages');
+          // TODO: alert user
+        }
+      },
+      (error) => {
+        console.log(error);
+      }
+    )
     this.setState({ loading: false });
   } 
   
   render() {
-    const loader = <div className="loader">Loading...</div>;
     return (
       <ReactModal 
       isOpen={this.props.showModal}
@@ -94,7 +113,7 @@ class LoginModal extends Component {
           <TextField label="Enter a nickname..." value={this.state.value} handleChange={this.handleChange} errorText={this.state.errorText}/>
         </div>
         <div className="modal-footer">
-          <button onClick={this.submit} className={"modal-button-primary" + (this.state.enabled ? '' : ' disabled')}>{this.state.loading ? loader : "Submit"}</button>
+          <ModalButton onClick={this.submit} loading={this.state.loading} enabled={this.state.enabled}/>
         </div>
       </ReactModal>
     );

@@ -16,8 +16,7 @@ let MessageList = ({messages}) => {
     return (
       <Scrollbars
       renderThumbVertical={props => <div {...props} className="thumb-vertical"/>}>
-      <div className="Messages" id="chat-messages" ref={(element) => this.element = element }>
-        
+      <div className="MessageList" id="chat-messages" ref={(element) => this.element = element }>
         <TransitionGroup>
           {messages.map((message, index) => (
             <CSSTransition

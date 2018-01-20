@@ -1,5 +1,12 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import './Input.css';
+
+const mapStateToProps = (state, ownProps) => {
+	return {
+		room_id: state.room._id
+	}
+}
 
 class Input extends Component {
 	constructor(props) {
@@ -9,13 +16,21 @@ class Input extends Component {
 
 	handleKeyPress(event) {
 		if(event.key === 'Enter'){
-			event.preventDefault()
+			event.preventDefault();
 			if (!event.target.value.trim()) {
 				return
 			}
-			let message = event.target.value
-			this.props.socket.emit('message', message);
-			event.target.value = ''
+			var myHeaders = new Headers();
+			myHeaders.append("Authorization", localStorage.getItem('token'));
+			myHeaders.append("Content-Type", "application/json");
+			fetch("/api/v1/room/" + this.props.room_id + "/messages", { method: 'POST', body: JSON.stringify({ message: event.target.value }), headers: myHeaders })
+				.then((result) => {},
+				(error) => {
+					console.log(error);
+					// TODO: alert user
+				}
+			)
+			event.target.value = '';
   		}
 	}
 
@@ -27,4 +42,4 @@ class Input extends Component {
 	}
 }
 
-export default Input;
+export default connect(mapStateToProps)(Input);

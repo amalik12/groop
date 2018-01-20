@@ -2,7 +2,7 @@
  * action types
  */
 
-export const ADD_MESSAGE = 'ADD_MESSAGE'
+export const ADD_MESSAGES = 'ADD_MESSAGES'
 export const SET_USER_COUNT = 'SET_USER_COUNT'
 export const SET_ROOM_INFO = 'SET_ROOM_INFO'
 export const LOGIN = 'LOGIN'
@@ -11,8 +11,8 @@ export const LOGIN = 'LOGIN'
  * action creators
  */
 
-export function addMessage(message) {
-  return { type: ADD_MESSAGE, message }
+export function addMessages(messages) {
+  return { type: ADD_MESSAGES, messages }
 }
 
 export function setUserCount(count) {
