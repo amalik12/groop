@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
 import {
-  ADD_MESSAGES, SET_USER_COUNT, SET_ROOM_INFO, LOGIN
+  ADD_MESSAGES, SET_ROOM_INFO, LOGIN, SET_CURRENT_USERS
 } from './actions'
 
 function messages(state = [], action) {
@@ -15,19 +15,12 @@ function messages(state = [], action) {
   }
 }
 
-function num_users(state = 0, action) {
-  switch (action.type) {
-    case SET_USER_COUNT:
-      return action.count
-    default:
-      return state
-  }
-}
-
 function room(state = { name: '', creation_time: Date.now(), current_users: [], _id: -1 }, action) {
   switch (action.type) {
     case SET_ROOM_INFO:
       return action.room
+    case SET_CURRENT_USERS:
+      return { ...state, current_users: action.users }
     default:
       return state
   }
@@ -42,4 +35,4 @@ function isLoggedIn(state = false, action) {
   }
 }
 
-export default combineReducers({ messages, num_users, room, isLoggedIn })
+export default combineReducers({ messages, room, isLoggedIn })

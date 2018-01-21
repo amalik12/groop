@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import './MessageList.css';
@@ -11,14 +11,22 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-let MessageList = ({messages}) => {
-    
+class MessageList extends Component {
+
+  componentDidUpdate(prevProps, prevState) {
+    console.log(this.scrollbars);
+    this.scrollbars.scrollTop(this.scrollbars.getScrollHeight());
+  }
+
+  render(){
     return (
       <Scrollbars
-      renderThumbVertical={props => <div {...props} className="thumb-vertical"/>}>
+      renderThumbVertical={props => <div {...this.props} className="thumb-vertical"/>}
+      ref={(component) => {this.scrollbars = component}}
+      >
       <div className="MessageList" id="chat-messages" ref={(element) => this.element = element }>
         <TransitionGroup>
-          {messages.map((message, index) => (
+          {this.props.messages.map((message, index) => (
             <CSSTransition
             classNames="message-anim"
             timeout={200}>
@@ -29,6 +37,7 @@ let MessageList = ({messages}) => {
       </div>
       </Scrollbars>
     );
+  }
 }
 
 export default connect(mapStateToProps)(MessageList);

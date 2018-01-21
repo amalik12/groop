@@ -25,15 +25,15 @@ app.get('/', function(req, res){
 });
 
 mongoose.connect(mongoDB)
-  .then(() => console.log('Database connection succesful'))
-  .catch((err) => console.error(err));
+.then(() => console.log('Database connection succesful'))
+.catch((err) => console.error(err));
 
 http.listen(5000, function () {
   console.log('Listening on port 5000');
 });
 
 app.head('/auth', verifyToken, function (req, res) {
-  User.findOne({ _id: req.userId }, function (err, user) {
+  User.findById(req.userId, function (err, user) {
     if (err) return res.sendStatus(500);
     if (!user) return res.sendStatus(404);
     res.sendStatus(200);
@@ -56,7 +56,7 @@ app.head('/api/v1/users', function(req, res){
 })
 
 app.get('/api/v1/room/:id', function (req, res) {
-  Room.findOne({ _id: req.params.id }, function (err, room) {
+  Room.findById(req.params.id, function (err, room) {
     if (err) return res.sendStatus(500);
     if (!room) return res.sendStatus(404);
     return res.status(200).send(room);
@@ -67,7 +67,7 @@ app.post('/api/v1/room/:id/messages', verifyToken, function (req, res) {
   if (!req.body || !req.body.message) {
     return res.sendStatus(400);
   }
-  User.findOne({ _id: req.userId }, function (err, user) {
+  User.findById(req.userId, function (err, user) {
     if (err) return res.sendStatus(500);
     if (!user) return res.sendStatus(404);
     Message.create({ text: req.body.message, user: user._id, room: req.params.id }, function (err, message) {
@@ -109,16 +109,42 @@ app.post('/login', function (req, res) {
 })
 
 io.on('connection', function(socket){
-  let numUsers = io.engine.clientsCount;
-  
   socket.on('disconnect', function(){
-    console.log('user disconnected');
-    numUsers = io.engine.clientsCount;
-    io.emit('user count', numUsers);
+    Room.findById(socket.room, function (err, room) {
+      if (err) console.error(err);
+      if (!room) console.log('room not found disconnect');
+      room.current_users = room.current_users.filter( user => user != socket.user );
+      room.save();
+      let users = [];
+      Promise.all(room.current_users.map((item) => {
+        return User.findById(item, function (err, user) {
+          if (err) console.error(error);
+          if (!user) console.log(user);
+          users.push(user)
+        })
+      })).then((result) => { io.emit('current users', users) });
+    });
   });
   
-  socket.on('user disconnect', function (msg) {
-    console.log(msg);
+  socket.on('user', function (data) {
+    jwt.verify(data.user, secret, function (err, decoded) {
+      if (err) console.error(err);
+      socket.user = decoded.id;
+      socket.room = data.room;
+      Room.findById(data.room, function (err, room) {
+        if (err) console.error(err);
+        if (!room) console.log('room not found');
+        room.current_users.push(decoded.id);
+        room.save();
+        let users = [];
+        Promise.all(room.current_users.map((item) => {
+          return User.findById(item, function (err, user) {
+            if (err) console.error(error);
+            if (!user) console.log(user);
+            users.push(user)
+          })
+        })).then((result) => { io.emit('current users', users) } );
+      });
+    });
   });
-  io.emit('user count', numUsers);
 });
