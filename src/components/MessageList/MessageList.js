@@ -13,9 +13,15 @@ const mapStateToProps = (state, ownProps) => {
 
 class MessageList extends Component {
 
+  componentWillUpdate(nextProps, nextState) {
+    if (this.scrollbars.getScrollHeight() - this.scrollbars.getScrollTop() === this.scrollbars.getClientHeight())
+      this.scrollBot = true;
+  }
+
   componentDidUpdate(prevProps, prevState) {
-    console.log(this.scrollbars);
-    this.scrollbars.scrollTop(this.scrollbars.getScrollHeight());
+    if (this.scrollBot)
+      this.scrollbars.scrollToBottom();
+    this.scrollBot = false;
   }
 
   render(){
