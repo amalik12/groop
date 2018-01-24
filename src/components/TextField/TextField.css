@@ -1,6 +1,8 @@
 .textfield {
   position: relative;
   padding-bottom: 20px;
+  margin-bottom: 25px;
+  text-align: left;
 }
 
 .textfield-label {
@@ -29,6 +31,7 @@
   padding-bottom: 2px;
   width: 100%;
   transition: 0.3s;
+  outline: none;
   color: #3e4b5c;
   font-family: 'Source Sans Pro', sans-serif;
   font-size: 17px;

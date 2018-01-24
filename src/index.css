@@ -5,3 +5,9 @@ body {
   color: #3e4b5c;
   background: #f4f5ff;
 }
+
+a, .link {
+  text-decoration: none;
+  color: rgb(40, 90, 226);
+  cursor: pointer;
+}

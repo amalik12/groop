@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import 'normalize.css';
 import './index.css';
 import App from './components/App';
 import registerServiceWorker from './registerServiceWorker';
@@ -7,7 +8,7 @@ import io from 'socket.io-client';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import chat from './reducers';
-import { login, addMessages, setRoomInfo, setCurrentUsers } from './actions';
+import { signin, addMessages, setRoomInfo, setCurrentUsers } from './actions';
 
 let store = createStore(chat);
 var socket = io({ autoConnect: false });
@@ -25,10 +26,12 @@ fetch("/api/v1/room/5a4d7a61caa2040616b09e75")
   (result) => {
     if (result.status === 200) {
       return result.json();
+    } else {
+      throw new Error('cannot retrieve room');
     }
   },
   (error) => {
-    console.log(error);
+    throw error;
   }
 )
 .then((data) => {
@@ -37,19 +40,22 @@ fetch("/api/v1/room/5a4d7a61caa2040616b09e75")
   registerServiceWorker();
   if (localStorage.getItem('token'))
     return fetch("/auth", { method: 'HEAD', headers: { 'Authorization': localStorage.getItem('token') } });
-  Promise.resolve(-1);
-})
+  throw new Error('not logged in');
+  }, (error) => {
+    throw error;
+  }
+)
 .then(
   (result) => {
     if (result !== -1 && result.status === 200) {
-      store.dispatch(login());
+      store.dispatch(signin());
       return fetch("/api/v1/room/" + store.getState().room._id + '/messages', { headers: { 'Authorization': localStorage.getItem('token') } })
     } else {
       localStorage.removeItem('token');
     }
   },
   (error) => {
-    console.log(error);
+    throw error;
   }
 )
 .then(
@@ -66,7 +72,7 @@ fetch("/api/v1/room/5a4d7a61caa2040616b09e75")
     }
   },
   (error) => {
-    console.log(error);
+    throw error;
   }
 )
-
+.catch(error => { console.log(error); })

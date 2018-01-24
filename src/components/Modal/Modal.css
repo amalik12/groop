@@ -38,6 +38,7 @@
   overflow: auto;
   background: white;
   max-height: 800px;
+  text-align: center;
 }
 
 .modal-close {

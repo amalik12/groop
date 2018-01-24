@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
 import {
-  ADD_MESSAGES, SET_ROOM_INFO, LOGIN, SET_CURRENT_USERS
+  ADD_MESSAGES, SET_ROOM_INFO, SIGNIN, SET_CURRENT_USERS
 } from './actions'
 
 function messages(state = [], action) {
@@ -26,13 +26,13 @@ function room(state = { name: '', creation_time: Date.now(), current_users: [], 
   }
 }
 
-function isLoggedIn(state = false, action) {
+function modals(state = { signin: true }, action) {
   switch (action.type) {
-    case LOGIN:
-      return true
+    case SIGNIN:
+      return { ...state, signin: false }
     default:
       return state
   }
 }
 
-export default combineReducers({ messages, room, isLoggedIn })
+export default combineReducers({ messages, room, modals })

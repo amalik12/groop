@@ -5,6 +5,7 @@ const path = require('path');
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var jwt = require('jsonwebtoken');
+var bcrypt = require('bcryptjs');
 var verifyToken = require('./verifyToken');
 require('dotenv').config();
 
@@ -101,29 +102,47 @@ app.post('/login', function (req, res) {
   User.findOne({ name: req.body.name }, function (err, user) {
     if (err) return res.sendStatus(500);
     if (!user) return res.sendStatus(404);
-    var token = jwt.sign({ id: user._id }, secret, {
-      expiresIn: 86400 
+    bcrypt.compare(req.body.password, user.password, function (err, isValid) {
+      if (err) console.error(err);
+      if (isValid) {
+        var token = jwt.sign({ id: user._id }, secret, {
+          expiresIn: 86400
+        });
+        res.status(200).send({ auth: true, token: token });
+      } else {
+        res.sendStatus(401);
+      }
     });
-    res.status(200).send({ auth: true, token: token });
   })
+})
+
+app.post('/register', function (req, res) {
+  bcrypt.genSalt(12, function (err, salt) {
+    bcrypt.hash(req.body.password, salt, function (err, hash) {
+      if (err) console.error(err);
+      User.create({ name: req.body.name, password: hash }, function (err, user) {
+        if (err) return res.sendStatus(500);
+        if (!user) return res.sendStatus(404);
+        var token = jwt.sign({ id: user._id }, secret, {
+          expiresIn: 86400
+        });
+        res.status(200).send({ auth: true, token: token });
+      })
+    });
+  });
 })
 
 io.on('connection', function(socket){
   socket.on('disconnect', function(){
-    Room.findById(socket.room, function (err, room) {
+    User.findByIdAndUpdate(socket.user, { room: undefined }, function (err, user) {
       if (err) console.error(err);
-      if (!room) console.log('room not found disconnect');
-      room.current_users = room.current_users.filter( user => user != socket.user );
-      room.save();
-      let users = [];
-      Promise.all(room.current_users.map((item) => {
-        return User.findById(item, function (err, user) {
-          if (err) console.error(error);
-          if (!user) console.log(user);
-          users.push(user)
-        })
-      })).then((result) => { io.emit('current users', users) });
-    });
+      if (!user) console.log('user not found');
+      User.find({ room: socket.room }, function (err, users) {
+        if (err) console.error(err);
+        if (!users) console.log('user not found');
+        io.emit('current users', users);
+      })
+    })
   });
   
   socket.on('user', function (data) {
@@ -131,19 +150,14 @@ io.on('connection', function(socket){
       if (err) console.error(err);
       socket.user = decoded.id;
       socket.room = data.room;
-      Room.findById(data.room, function (err, room) {
+      User.findByIdAndUpdate(decoded.id, { room: data.room }, function (err, user) {
         if (err) console.error(err);
-        if (!room) console.log('room not found');
-        room.current_users.push(decoded.id);
-        room.save();
-        let users = [];
-        Promise.all(room.current_users.map((item) => {
-          return User.findById(item, function (err, user) {
-            if (err) console.error(error);
-            if (!user) console.log(user);
-            users.push(user)
-          })
-        })).then((result) => { io.emit('current users', users) } );
+        if (!user) console.log('user not found');
+        User.find({ room: data.room }, function (err, users) {
+          if (err) console.error(err);
+          if (!users) console.log('user not found');
+          io.emit('current users', users);
+        })
       });
     });
   });

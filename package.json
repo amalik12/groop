@@ -3,13 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "dotenv": "^4.0.0",
     "express": "^4.16.2",
     "jsonwebtoken": "^8.1.0",
     "moment": "^2.20.1",
     "mongoose": "^5.0.0-rc1",
+    "normalize.css": "^7.0.0",
     "react": "^16.2.0",
-    "react-cookie": "^2.1.2",
     "react-custom-scrollbars": "^4.2.1",
     "react-dom": "^16.2.0",
     "react-modal": "^3.1.10",
@@ -24,7 +25,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "db_wipe": "node src/util/wipe.js",
+    "create_index": "python src/util/indexcreate.py"
   },
   "proxy": "http://localhost:5000"
 }

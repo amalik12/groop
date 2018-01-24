@@ -21,7 +21,7 @@ class TextField extends Component {
   render() {
     return (
       <div className={"textfield" + (this.props.errorText ? " invalid" : "")}>
-        <input className="textfield-input" value={this.props.value} onChange={this.props.handleChange} onFocus={this.focusOn} onBlur={this.focusOff}/>
+        <input name={this.props.label} onKeyPress={this.props.onKeyPress} className="textfield-input" type={this.props.password ? 'password' : ''} value={this.props.value} onChange={this.props.handleChange} onFocus={this.focusOn} onBlur={this.focusOff}/>
         <label className={"textfield-label" + (this.state.focused ? " textfield-label-focused" : "") + (this.props.value ? " has-input" : "")}>{this.props.label}</label>
         <span className="textfield-error">{this.props.errorText}</span>
       </div>
