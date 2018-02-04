@@ -6,6 +6,7 @@ export const ADD_MESSAGES = 'ADD_MESSAGES'
 export const SET_CURRENT_USERS = 'SET_CURRENT_USERS'
 export const SET_ROOM_INFO = 'SET_ROOM_INFO'
 export const SIGNIN = 'SIGNIN'
+export const MEMBERS = 'MEMBERS'
 
 /*
  * action creators
@@ -25,4 +26,8 @@ export function setRoomInfo(room) {
 
 export function signin() {
   return { type: SIGNIN }
+}
+
+export function members() {
+  return { type: MEMBERS }
 }

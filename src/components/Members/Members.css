@@ -1,6 +1,7 @@
 .Members {
   display: flex;
   align-items: center;
+  cursor: pointer;
 }
 
 .member-count {

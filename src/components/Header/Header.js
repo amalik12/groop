@@ -18,7 +18,7 @@ class Header extends Component {
 	      	<span className="room-name">{this.props.room.name}</span>
 	      	<span className="creation-time">Created <Timestamp time={this.props.room.creation_time} /></span>
       	</div>
-      	<Members />
+      	<Members/>
       </div>
     );
   }

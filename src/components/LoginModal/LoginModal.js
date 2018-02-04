@@ -27,7 +27,7 @@ class LoginModal extends Component {
       if (!event.target.value.trim()) {
         return
       }
-      if (this.state.enabled) {
+      if (this.state.username && this.state.password) {
         this.submit();
       }
     }

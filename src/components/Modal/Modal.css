@@ -39,11 +39,20 @@
   background: white;
   max-height: 800px;
   text-align: center;
+  overflow-y: auto;
 }
 
 .modal-close {
   float: right;
   opacity: 0.3;
+  cursor: pointer;
+  user-select: none;
+  padding: 2px;
+}
+
+.modal-close:hover {
+  opacity: 0.6;
+  background: #e4e4e4;
 }
 
 .modal-footer {

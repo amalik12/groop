@@ -1,0 +1,16 @@
+.user-info .Avatar {
+    width: 48px;
+    height: 48px;
+}
+
+.user-info-name {
+    display: inline-block;
+    font-size: 20px;
+    margin-left: 12px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
