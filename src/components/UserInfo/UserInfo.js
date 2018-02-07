@@ -1,13 +1,12 @@
 import React from 'react';
-import Modal from '../Modal';
-import { connect } from 'react-redux'
 import Avatar from '../Avatar';
 import './UserInfo.css';
-let UserInfo = (props) => {
+
+let UserInfo = ({user}) => {
     return (
         <div className="user-info">
-            <Avatar />
-            <div className="user-info-name">{props.user.name}</div>
+            <Avatar user={user}/>
+            <div className="user-info-name">{user.name}</div>
         </div>
     );
 }

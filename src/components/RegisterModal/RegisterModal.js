@@ -85,7 +85,7 @@ class RegisterModal extends Component {
                 <TextField label="Username" value={this.state.username} handleChange={this.handleUsernameChange} errorText={this.props.error} />
                 <TextField label="Password" password={true} value={this.state.password} handleChange={this.handlePasswordChange} errorText={this.state.passwordError} />
                 <TextField label="Confirm password" password={true} value={this.state.confirm} handleChange={this.handlePasswordChange} />
-                Already have an account? <a href="#" onClick={this.props.switch}>Login</a>
+                Already have an account? <span className="link" onClick={this.props.switch}>Login</span>
             </FormModal>
         );
     }

@@ -1,13 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 import './Avatar.css';
 
-class Avatar extends Component {
-  render() {
-    return (
-      <div className="Avatar">
-      </div>
-    );
-  }
+let Avatar = ({user}) => {
+  return (
+    <img className="Avatar" alt={user.name + " avatar"} src={"/images/" + user.avatar}>
+    </img>
+  );
 }
 
 export default Avatar;

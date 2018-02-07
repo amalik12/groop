@@ -68,7 +68,7 @@ app.post('/api/v1/room/:id/messages', verifyToken, function (req, res) {
   if (!req.body || !req.body.message) {
     return res.sendStatus(400);
   }
-  User.findById(req.userId, function (err, user) {
+  User.findById(req.userId, { password: 0 }, function (err, user) {
     if (err) return res.sendStatus(500);
     if (!user) return res.sendStatus(404);
     Message.create({ text: req.body.message, user: user._id, room: req.params.id }, function (err, message) {
@@ -88,7 +88,7 @@ app.get('/api/v1/room/:id/messages', verifyToken, function (req, res) {
     if (err) return res.sendStatus(500);
     if (!messages) return res.sendStatus(404);
     Promise.all(messages.map((message) => {
-      return User.findOne({ _id: message.user }, function (err, user) {
+      return User.findOne({ _id: message.user }, { password: 0 }, function (err, user) {
         if (err) console.error(error);
         if (!user) console.log(user);
         message.user = user;
@@ -120,7 +120,9 @@ app.post('/register', function (req, res) {
   bcrypt.genSalt(12, function (err, salt) {
     bcrypt.hash(req.body.password, salt, function (err, hash) {
       if (err) console.error(err);
-      User.create({ name: req.body.name, password: hash }, function (err, user) {
+      var numAvatars = 8
+      var avatar = Math.floor(Math.random() * numAvatars + 1);
+      User.create({ name: req.body.name, password: hash, avatar: 'default-' + avatar + '.png' }, function (err, user) {
         if (err) return res.sendStatus(500);
         if (!user) return res.sendStatus(404);
         var token = jwt.sign({ id: user._id }, secret, {
@@ -137,7 +139,7 @@ io.on('connection', function(socket){
     User.findByIdAndUpdate(socket.user, { room: undefined }, function (err, user) {
       if (err) console.error(err);
       if (!user) console.log('user not found');
-      User.find({ room: socket.room }, function (err, users) {
+      User.find({ room: socket.room }, { password: 0 }, function (err, users) {
         if (err) console.error(err);
         if (!users) console.log('user not found');
         io.emit('current users', users);
@@ -153,7 +155,7 @@ io.on('connection', function(socket){
       User.findByIdAndUpdate(decoded.id, { room: data.room }, function (err, user) {
         if (err) console.error(err);
         if (!user) console.log('user not found');
-        User.find({ room: data.room }, function (err, users) {
+        User.find({ room: data.room }, { password: 0 },function (err, users) {
           if (err) console.error(err);
           if (!users) console.log('user not found');
           io.emit('current users', users);
