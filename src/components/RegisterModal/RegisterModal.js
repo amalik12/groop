@@ -33,8 +33,8 @@ class RegisterModal extends Component {
     }
     
     checkUsername() {
-        this.setState({ loading: true });
         if (this.state.username) {
+            this.setState({ loading: true });
             fetch("/api/v1/users?name=" + this.state.username, { method: 'HEAD' })
             .then(
                 (result) => {
