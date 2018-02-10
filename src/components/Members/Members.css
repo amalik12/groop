@@ -9,3 +9,20 @@
   font-size: 15px;
   margin-right: 9px;
 }
+
+.member-more {
+  border-radius: 50%;
+  border: 1px solid #acacad;
+  color: #acacad;
+  font-size: 13px;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 30px;
+  display: inline-block;
+}
+
+.Members .Avatar,  .Members .member-more {
+  width: 30px;
+  height: 30px;
+  margin-right: 5px;
+}

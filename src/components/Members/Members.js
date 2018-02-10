@@ -21,7 +21,8 @@ let Members = ({current_users, showModal}) => {
   return (
     <div className="Members" onClick={showModal}>
       <span className="member-count">{current_users.length} {current_users.length === 1 ? 'member' : 'members'}</span>
-      {preview.map((item) => { return <Avatar user={item} /> })}
+      {preview.map((item) => { return <Avatar user={item}/> })}
+      {current_users.length > 3 && <div className="member-more">{'+' + (current_users.length - 3)}</div>}
     </div>
   );
 }
