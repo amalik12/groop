@@ -5,27 +5,29 @@ import FormModal from '../FormModal';
 class RegisterModal extends Component {
     constructor(props) {
         super(props);
-        this.state = { username: '', password: '', confirm: '', passwordError: '', enabled: false, loading: false };
+        this.state = { username: '', password: '', confirm: '', passwordError: '',
+        usernameValid: false, passwordValid: false, loading: false };
         this.handleUsernameChange = this.handleUsernameChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
         this.checkUsername = this.checkUsername.bind(this);
         this.checkPassword = this.checkPassword.bind(this);
         this.submit = this.submit.bind(this);
-        var usernameTimer;
-        var passwordTimer;
+        this.usernameTimer = undefined;
+        this.passwordTimer = undefined;
     }
     
     handleUsernameChange(event) {
         clearTimeout(this.usernameTimer);
-        this.setState({ username: event.target.value, enabled: false });
+        this.setState({ username: event.target.value, usernameValid: false });
         this.props.setError('');
         this.usernameTimer = setTimeout(this.checkUsername, 700);
     }
     
     handlePasswordChange(event) {
         clearTimeout(this.passwordTimer);
+        this.setState({ passwordValid: false, passwordError: '' });
         if (event.target.name === "Confirm password") {
-            this.setState({ confirm: event.target.value, passwordError: '', enabled: false });
+            this.setState({ confirm: event.target.value });
         } else {
             this.setState({ password: event.target.value });
         }
@@ -40,8 +42,8 @@ class RegisterModal extends Component {
                 (result) => {
                     if (result.status === 200) {
                         this.props.setError('Username already taken');
-                    } else if (this.state.password && this.state.confirm) {
-                        this.setState({enabled: true});
+                    } else {
+                        this.setState({usernameValid: true});
                     }
                     this.setState({ loading: false });
                 },
@@ -55,11 +57,12 @@ class RegisterModal extends Component {
     
     checkPassword() {
         this.setState({ loading: true });
-        if (this.state.password && this.state.confirm && !this.props.error) {
-            if (this.state.password === this.state.confirm) {
-                this.setState({ enabled: true });
-            } else {
-                this.setState({ enabled: false, passwordError: 'Passwords do not match' });
+        if (this.state.password && !this.props.error && this.state.password === this.state.confirm) {
+            this.setState({ passwordValid: true });
+        } else {
+            this.setState({ passwordValid: false });
+            if (this.state.password || this.state.confirm){
+                this.setState({ passwordError: 'Passwords do not match' });
             }
         }
         this.setState({ loading: false });
@@ -76,14 +79,21 @@ class RegisterModal extends Component {
         .then(result => this.props.signin(result))
         .then((result) => {
             this.setState({ loading: false });
+        },
+        (error) => {
+            console.log(error);
+            this.setState({ loading: false });
         })
     }
     
     render() {
         return (
-            <FormModal title="Register" showModal={this.props.showModal} submitted={this.props.submitted} submit={this.submit} loading={this.state.loading} enabled={this.state.enabled}>
-                <TextField label="Username" value={this.state.username} handleChange={this.handleUsernameChange} errorText={this.props.error} />
-                <TextField label="Password" password={true} value={this.state.password} handleChange={this.handlePasswordChange} errorText={this.state.passwordError} />
+            <FormModal title="Register" showModal={this.props.showModal} submitted={this.props.submitted}
+            submit={this.submit} loading={this.state.loading} enabled={this.state.usernameValid && this.state.passwordValid}>
+                <TextField label="Username" value={this.state.username} handleChange={this.handleUsernameChange}
+                errorText={this.props.error} />
+                <TextField label="Password" password={true} value={this.state.password} handleChange={this.handlePasswordChange}
+                errorText={this.state.passwordError} />
                 <TextField label="Confirm password" password={true} value={this.state.confirm} handleChange={this.handlePasswordChange} />
                 Already have an account? <span className="link" onClick={this.props.switch}>Login</span>
             </FormModal>
