@@ -9,12 +9,11 @@ class LoginModal extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.submit = this.submit.bind(this);
-    var timer;
   }
   
   handleChange(event) {
     if (event.target.name === "Username") {
-      this.setState({ username: event.target.value});
+      this.setState({ username: event.target.value });
     } else {
       this.setState({ password: event.target.value });
     }
@@ -24,9 +23,6 @@ class LoginModal extends Component {
   handleKeyPress(event) {
     if (event.key === 'Enter') {
       event.preventDefault();
-      if (!event.target.value.trim()) {
-        return
-      }
       if (this.state.username && this.state.password) {
         this.submit();
       }

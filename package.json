@@ -29,5 +29,9 @@
     "db_wipe": "node src/util/wipe.js",
     "create_index": "python src/util/indexcreate.py"
   },
-  "proxy": "http://localhost:5000"
+  "proxy": "http://localhost:5000",
+  "devDependencies": {
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1"
+  }
 }

@@ -16,7 +16,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   }
 }
 
-let Members = ({current_users, showModal}) => {
+export const Members = ({current_users, showModal}) => {
   let preview = current_users.slice(0, 3);
   return (
     <div className="Members" onClick={showModal}>

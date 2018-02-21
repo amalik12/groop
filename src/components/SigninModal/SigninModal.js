@@ -18,7 +18,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   }
 }
 
-class SigninModal extends Component {
+export class SigninModal extends Component {
   constructor(props) {
     super(props);
     this.switchModal = this.switchModal.bind(this);

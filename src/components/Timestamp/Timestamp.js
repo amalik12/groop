@@ -4,7 +4,7 @@ import moment from 'moment';
 class Timestamp extends Component {
   componentDidMount() {
     this.refresh = this.refresh.bind(this);
-    var timer = setInterval(this.refresh, 3000);
+    this.timer = setInterval(this.refresh, 3000);
   }
 
   componentWillUnmount() {

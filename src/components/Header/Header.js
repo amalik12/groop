@@ -10,7 +10,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-let Header = ({room}) => {
+export const Header = ({room}) => {
     return (
       <div className="Header">
       	<div className='room-info'>

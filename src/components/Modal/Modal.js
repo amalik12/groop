@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactModal from 'react-modal';
-import '../Modal/Modal.css';
+import './Modal.css';
 
 let Modal = (props) => {
     return (
@@ -11,11 +11,11 @@ let Modal = (props) => {
         closeTimeoutMS={200}
         onRequestClose={props.dismiss}
         shouldCloseOnOverlayClick={props.dismissable}>
-        <div className="modal-header">
-        <span className="modal-title">{props.title}</span>
-        {props.dismissable && <i onClick={props.dismiss} className="modal-close material-icons">close</i>}
-        </div>
-        {props.children}
+            <div className="modal-header">
+                <span className="modal-title">{props.title}</span>
+                {props.dismissable && <i onClick={props.dismiss} className="modal-close material-icons">close</i>}
+            </div>
+            {props.children}
         </ReactModal>
     );
 }

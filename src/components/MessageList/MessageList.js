@@ -11,7 +11,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-class MessageList extends Component {
+export class MessageList extends Component {
 
   componentWillUpdate(nextProps, nextState) {
     if (this.scrollbars.getScrollHeight() - this.scrollbars.getScrollTop() === this.scrollbars.getClientHeight())
@@ -27,16 +27,17 @@ class MessageList extends Component {
   render(){
     return (
       <Scrollbars
-      renderThumbVertical={props => <div {...this.props} className="thumb-vertical"/>}
+      renderThumbVertical={props => <div {...this.props} dispatch={null} className="thumb-vertical"/>}
       ref={(component) => {this.scrollbars = component}}
       >
       <div className="MessageList" id="chat-messages" ref={(element) => this.element = element }>
         <TransitionGroup>
           {this.props.messages.map((message, index) => (
             <CSSTransition
+            key={index}
             classNames="message-anim"
             timeout={200}>
-              <Message key={index} {...message} />
+              <Message  {...message} />
             </CSSTransition>
           ))}
         </TransitionGroup>
