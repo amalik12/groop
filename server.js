@@ -121,8 +121,8 @@ app.post('/register', function (req, res) {
     bcrypt.hash(req.body.password, salt, function (err, hash) {
       if (err) console.error(err);
       var numAvatars = 8
-      var avatar = Math.floor(Math.random() * numAvatars + 1);
-      User.create({ name: req.body.name, password: hash, avatar: 'default-' + avatar + '.png' }, function (err, user) {
+      var avatar_id = Math.floor(Math.random() * numAvatars + 1);
+      User.create({ name: req.body.name, password: hash, avatar: 'default-' + avatar_id + '.png' }, function (err, user) {
         if (err) return res.sendStatus(500);
         if (!user) return res.sendStatus(404);
         var token = jwt.sign({ id: user._id }, secret, {
