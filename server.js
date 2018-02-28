@@ -33,6 +33,8 @@ http.listen(5000, function () {
   console.log('Listening on port 5000');
 });
 
+var numAvatars = 8;
+
 app.head('/auth', verifyToken, function (req, res) {
   User.findById(req.userId, function (err, user) {
     if (err) return res.sendStatus(500);
@@ -56,7 +58,7 @@ app.head('/api/v1/users', function(req, res){
   }  
 })
 
-app.get('/api/v1/room/:id', function (req, res) {
+app.get('/api/v1/rooms/:id', function (req, res) {
   Room.findById(req.params.id, function (err, room) {
     if (err) return res.sendStatus(500);
     if (!room) return res.sendStatus(404);
@@ -64,7 +66,7 @@ app.get('/api/v1/room/:id', function (req, res) {
   })
 })
 
-app.post('/api/v1/room/:id/messages', verifyToken, function (req, res) {
+app.post('/api/v1/rooms/:id/messages', verifyToken, function (req, res) {
   if (!req.body || !req.body.message) {
     return res.sendStatus(400);
   }
@@ -83,7 +85,7 @@ app.post('/api/v1/room/:id/messages', verifyToken, function (req, res) {
   })
 })
 
-app.get('/api/v1/room/:id/messages', verifyToken, function (req, res) {
+app.get('/api/v1/rooms/:id/messages', verifyToken, function (req, res) {
   Message.find({ room: req.params.id }, function (err, messages) {
     if (err) return res.sendStatus(500);
     if (!messages) return res.sendStatus(404);
@@ -120,7 +122,6 @@ app.post('/register', function (req, res) {
   bcrypt.genSalt(12, function (err, salt) {
     bcrypt.hash(req.body.password, salt, function (err, hash) {
       if (err) console.error(err);
-      var numAvatars = 8
       var avatar_id = Math.floor(Math.random() * numAvatars + 1);
       User.create({ name: req.body.name, password: hash, avatar: 'default-' + avatar_id + '.png' }, function (err, user) {
         if (err) return res.sendStatus(500);
@@ -155,7 +156,7 @@ io.on('connection', function(socket){
       User.findByIdAndUpdate(decoded.id, { room: data.room }, function (err, user) {
         if (err) console.error(err);
         if (!user) console.log('user not found');
-        User.find({ room: data.room }, { password: 0 },function (err, users) {
+        User.find({ room: data.room }, { password: 0 }, function (err, users) {
           if (err) console.error(err);
           if (!users) console.log('user not found');
           io.emit('current users', users);

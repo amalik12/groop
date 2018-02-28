@@ -21,7 +21,7 @@ socket.on('current users', function (users) {
   store.dispatch(setCurrentUsers(users))
 });
 
-fetch("/api/v1/room/5a4d7a61caa2040616b09e75")
+fetch("/api/v1/rooms/5a4d7a61caa2040616b09e75")
 .then(
   (result) => {
     if (result.status === 200) {
@@ -49,7 +49,7 @@ fetch("/api/v1/room/5a4d7a61caa2040616b09e75")
   (result) => {
     if (result !== -1 && result.status === 200) {
       store.dispatch(signin());
-      return fetch("/api/v1/room/" + store.getState().room._id + '/messages', { headers: { 'Authorization': localStorage.getItem('token') } })
+      return fetch("/api/v1/rooms/" + store.getState().room._id + '/messages', { headers: { 'Authorization': localStorage.getItem('token') } })
     } else {
       localStorage.removeItem('token');
     }

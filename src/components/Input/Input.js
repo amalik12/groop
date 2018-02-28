@@ -29,7 +29,7 @@ export class Input extends Component {
 			var myHeaders = new Headers();
 			myHeaders.append("Authorization", localStorage.getItem('token'));
 			myHeaders.append("Content-Type", "application/json");
-			fetch("/api/v1/room/" + this.props.room_id + "/messages", { method: 'POST', body: JSON.stringify({ message: event.target.value }), headers: myHeaders })
+			fetch("/api/v1/rooms/" + this.props.room_id + "/messages", { method: 'POST', body: JSON.stringify({ message: event.target.value }), headers: myHeaders })
 				.then((result) => {},
 				(error) => {
 					console.log(error);

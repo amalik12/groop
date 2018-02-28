@@ -31,7 +31,7 @@ export class SigninModal extends Component {
     return new Promise((resolve, reject) => {
       if (data && data.token) {
         localStorage.setItem('token', data.token);
-        resolve(fetch("/api/v1/room/" + this.props.room_id + '/messages', { headers: { 'Authorization': localStorage.getItem('token') } }));
+        resolve(fetch("/api/v1/rooms/" + this.props.room_id + '/messages', { headers: { 'Authorization': localStorage.getItem('token') } }));
       } else if (!this.state.error) {
         this.setState({ error: 'An error occured.' });
       }
