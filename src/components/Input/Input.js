@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import $ from 'jquery';
 import './Input.css';
 
 const mapStateToProps = (state, ownProps) => {
@@ -11,8 +12,13 @@ const mapStateToProps = (state, ownProps) => {
 export class Input extends Component {
 	constructor(props) {
 	    super(props);
-	    this.handleKeyPress = this.handleKeyPress.bind(this);
-	 }
+		this.handleKeyPress = this.handleKeyPress.bind(this);
+		this.handleChange = this.handleChange.bind(this);
+	}
+
+	componentDidMount() {
+		this.height = this.textInput.style.height;
+	}
 
 	handleKeyPress(event) {
 		if(event.key === 'Enter'){
@@ -34,10 +40,16 @@ export class Input extends Component {
   		}
 	}
 
+	handleChange(event) {
+		$(this.textInput).outerHeight(this.height).outerHeight(this.textInput.scrollHeight);
+	}
+
 	render() {
 		return (
-			<textarea onKeyPress={this.handleKeyPress} placeholder="Type a message..." className="Input">
-			</textarea>
+			<div className="Input">
+				<textarea className="input-inner" ref={(input) => { this.textInput = input; }} onKeyPress={this.handleKeyPress} onChange={this.handleChange} placeholder="Type a message...">
+				</textarea>
+			</div>
 		);
 	}
 }
