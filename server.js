@@ -67,36 +67,26 @@ app.get('/api/v1/rooms/:id', function (req, res) {
 })
 
 app.post('/api/v1/rooms/:id/messages', verifyToken, function (req, res) {
-  if (!req.body || !req.body.message) {
-    return res.sendStatus(400);
-  }
-  User.findById(req.userId, { password: 0 }, function (err, user) {
-    if (err) return res.sendStatus(500);
-    if (!user) return res.sendStatus(404);
-    Message.create({ text: req.body.message, user: user._id, room: req.params.id }, function (err, message) {
-      if (err) return res.sendStatus(500);
-      if (!message) return res.sendStatus(404);
-      let output = message;
-      output.user = user;
-      console.log(user.name + ': ' + message.text);
-      io.emit('message', output);
-      return res.sendStatus(200);
-    })
+  if (!req.body || !req.body.message) return res.sendStatus(400);
+  Message.create({ text: req.body.message, user: req.userId, room: req.params.id })
+  .then((message) => {
+    return Message.findById(message.id).populate('user', { password: 0 }).exec()
+  })
+  .then((message) => {
+    io.emit('message', message);
+    return res.sendStatus(200);
+  })
+  .catch((err) => {
+    console.error(err);
+    return res.sendStatus(500);
   })
 })
 
 app.get('/api/v1/rooms/:id/messages', verifyToken, function (req, res) {
-  Message.find({ room: req.params.id }, function (err, messages) {
+  Message.find({ room: req.params.id }).populate('user', { password: 0 }).exec(function (err, messages) {
     if (err) return res.sendStatus(500);
     if (!messages) return res.sendStatus(404);
-    Promise.all(messages.map((message) => {
-      return User.findOne({ _id: message.user }, { password: 0 }, function (err, user) {
-        if (err) console.error(error);
-        if (!user) console.log(user);
-        message.user = user;
-      })
-    }))
-    .then((values) => { res.status(200).send(messages) })
+    res.status(200).send(messages)
   })
 })
 
@@ -137,14 +127,17 @@ app.post('/register', function (req, res) {
 
 io.on('connection', function(socket){
   socket.on('disconnect', function(){
-    User.findByIdAndUpdate(socket.user, { room: undefined }, function (err, user) {
-      if (err) console.error(err);
-      if (!user) console.log('user not found');
-      User.find({ room: socket.room }, { password: 0 }, function (err, users) {
-        if (err) console.error(err);
-        if (!users) console.log('user not found');
-        io.emit('current users', users);
-      })
+    User.findByIdAndUpdate(socket.user, { room: undefined })
+    .then((user) => {
+      if (!user) throw Error('Disconnect: user not found');
+      return User.find({ room: socket.room }, { password: 0 })
+    })
+    .then((users) => {
+      if (!users) throw Error('room is empty');
+      io.emit('current users', users);
+    })
+    .catch((err) => {
+      console.error(err);
     })
   });
   
@@ -153,15 +146,18 @@ io.on('connection', function(socket){
       if (err) console.error(err);
       socket.user = decoded.id;
       socket.room = data.room;
-      User.findByIdAndUpdate(decoded.id, { room: data.room }, function (err, user) {
-        if (err) console.error(err);
-        if (!user) console.log('user not found');
-        User.find({ room: data.room }, { password: 0 }, function (err, users) {
-          if (err) console.error(err);
-          if (!users) console.log('user not found');
-          io.emit('current users', users);
-        })
-      });
+      User.findByIdAndUpdate(decoded.id, { room: data.room })
+      .then((user) => {
+        if (!user) throw Error('Connect: user not found');
+        return User.find({ room: data.room }, { password: 0 })
+      })
+      .then((users) => {
+        if (!users) throw Error('room is empty');
+        io.emit('current users', users);
+      })
+      .catch((err) => {
+        console.error(err);
+      })
     });
   });
 });
