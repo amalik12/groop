@@ -7,6 +7,7 @@ var io = require('socket.io')(http);
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
 var verifyToken = require('./verifyToken');
+var generate = require('./generateId');
 require('dotenv').config();
 
 var mongoose = require('mongoose');
@@ -33,7 +34,7 @@ http.listen(5000, function () {
   console.log('Listening on port 5000');
 });
 
-var numAvatars = 8;
+var NUM_AVATARS = 8;
 
 app.head('/auth', verifyToken, function (req, res) {
   User.findById(req.userId, function (err, user) {
@@ -49,7 +50,7 @@ app.head('/api/v1/users', function(req, res){
       if (user) {
         res.sendStatus(200);
       } else {
-        if (err) console.error('error: ' + err);
+        if (err) console.error(err);
         res.sendStatus(404);
       }
     })
@@ -59,10 +60,32 @@ app.head('/api/v1/users', function(req, res){
 })
 
 app.get('/api/v1/rooms/:id', function (req, res) {
-  Room.findById(req.params.id, function (err, room) {
+  Room.find({ shortid: req.params.id }, { _id: 0 }, function (err, room) {
     if (err) return res.sendStatus(500);
     if (!room) return res.sendStatus(404);
     return res.status(200).send(room);
+  })
+})
+
+app.post('/api/v1/rooms/', function (req, res) {
+  if (!req.body || !req.body.name) return res.sendStatus(400);
+  let shortid;
+  let count;
+  Room.count({}).then((result) => {
+    count = result + 1;
+    if (req.body.shortid) {
+      shortid = req.body.shortid;
+    } else {
+      shortid = generate(count)
+    }
+    return Room.create({ name: req.body.name, shortid: shortid })
+  })
+  .then((room) => {
+    return res.status(200).send(room);
+  })
+  .catch((err) => {
+    console.error(err);
+    if (err) return res.sendStatus(500);
   })
 })
 
@@ -112,7 +135,7 @@ app.post('/register', function (req, res) {
   bcrypt.genSalt(12, function (err, salt) {
     bcrypt.hash(req.body.password, salt, function (err, hash) {
       if (err) console.error(err);
-      var avatar_id = Math.floor(Math.random() * numAvatars + 1);
+      var avatar_id = Math.floor(Math.random() * NUM_AVATARS + 1);
       User.create({ name: req.body.name, password: hash, avatar: 'default-' + avatar_id + '.png' }, function (err, user) {
         if (err) return res.sendStatus(500);
         if (!user) return res.sendStatus(404);
