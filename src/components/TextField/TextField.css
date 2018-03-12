@@ -5,6 +5,10 @@
   text-align: left;
 }
 
+.textfield.inline {
+  display: inline-block;
+}
+
 .textfield-label {
   position: absolute;
   display: block;
@@ -15,10 +19,15 @@
   right: 0;
   top: 0;
   pointer-events: none;
+  user-select: none;
   transition: 0.3s;
 }
 
-.textfield-label-focused, .textfield-label.has-input {
+.textfield-label.large {
+  font-size: 28px;
+}
+
+.textfield-label.focused, .textfield-label.has-input {
   color: #2d3d7d;
   top: -20px;
   font-size: 15px;
@@ -35,6 +44,10 @@
   color: #3e4b5c;
   font-family: 'Source Sans Pro', sans-serif;
   font-size: 17px;
+}
+
+.textfield-input.large {
+  font-size: 28px;
 }
 
 .textfield-input:focus {

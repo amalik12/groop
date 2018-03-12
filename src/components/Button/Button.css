@@ -1,0 +1,45 @@
+.button {
+  text-align: center;
+  border: none;
+  display: inline-block;
+  font-family: 'Source Sans Pro', sans-serif;
+  color: white;
+  font-size: 20px;
+  padding: 12px 30px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.4s;
+  min-width: 120px;
+}
+
+.button > * {
+  transition: background 0.4s;
+}
+
+.button-modal {
+  padding: 12px 0px;
+  flex-grow: 1;
+  max-height: 45px;
+  font-size: 16px;
+}
+
+.button.primary, .button.primary > * {
+  background: #2d3d7d;
+}
+
+.button.primary:hover, .button.primary:hover > * {
+  background: #4259b6;
+}
+.button.disabled {
+  background: #aeaeae;
+  pointer-events: none;
+}
+
+.button.loading {
+  color: #aeaeae;
+}
+
+.button.disabled > * {
+  background: #aeaeae;
+}

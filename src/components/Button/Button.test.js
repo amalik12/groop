@@ -2,17 +2,17 @@ import React from 'react';
 import Enzyme, { shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 
-import ModalButton from './ModalButton';
+import Button from './Button';
 import ReactModal from 'react-modal';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe('<ModalButton />', () => {
+describe('<Button />', () => {
     let props = {
         onClick: jest.fn(),
         loading: false
     }
-    const wrapper = shallow(<ModalButton {...props}/>);
+    const wrapper = shallow(<Button {...props}/>);
     
     it('renders a button', () => {
         expect(wrapper.find('button').length).toBe(1);
@@ -23,9 +23,15 @@ describe('<ModalButton />', () => {
     });
 
     it('adds a class if enabled prop is false', () => {
-        expect(wrapper.find('button').props().className).toBe('modal-button-primary');
+        expect(wrapper.find('button').props().className).toBe('button primary');
         wrapper.setProps({enabled: false});
-        expect(wrapper.find('button').props().className).toBe('modal-button-primary disabled');
+        expect(wrapper.find('button').props().className).toBe('button primary disabled');
+    });
+
+    it('adds a class if modal prop is true', () => {
+        expect(wrapper.find('button').props().className).toBe('button primary');
+        wrapper.setProps({ enabled: modal });
+        expect(wrapper.find('button').props().className).toBe('button primary modal');
     });
 
     it('displays a loader if loading prop is true', () => {

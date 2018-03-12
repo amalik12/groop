@@ -1,6 +1,6 @@
 import React from 'react';
 import Modal from '../Modal';
-import ModalButton from '../Modal/ModalButton';
+import Button from '../Button';
 
 let FormModal = (props) => {
     return (
@@ -9,7 +9,7 @@ let FormModal = (props) => {
                 {props.children}
             </div>
             <div className="modal-footer">
-                <ModalButton onClick={props.submit} loading={props.loading} enabled={props.enabled} />
+                <Button modal={true} onClick={props.submit} loading={props.loading} enabled={props.enabled} />
             </div>
         </Modal>
     );

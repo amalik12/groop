@@ -1,8 +1,16 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { checkUsername } from '../../actions';
 import TextField from '../TextField';
 import FormModal from '../FormModal';
 
-class RegisterModal extends Component {
+const mapDispatchToProps = (dispatch, ownProps) => {
+    return {
+        checkUsername: (username) => dispatch(checkUsername(username))
+    }
+}
+
+export class RegisterModal extends Component {
     constructor(props) {
         super(props);
         this.state = { username: '', password: '', confirm: '', passwordError: '',
@@ -19,7 +27,7 @@ class RegisterModal extends Component {
     handleUsernameChange(event) {
         clearTimeout(this.usernameTimer);
         this.setState({ username: event.target.value, usernameValid: false });
-        this.props.setError('');
+        this.props.clearLoginError();
         this.usernameTimer = setTimeout(this.checkUsername, 700);
     }
     
@@ -37,21 +45,15 @@ class RegisterModal extends Component {
     checkUsername() {
         if (this.state.username) {
             this.setState({ loading: true });
-            fetch("/api/v1/users?name=" + this.state.username, { method: 'HEAD' })
-            .then(
-                (result) => {
-                    if (result.status === 200) {
-                        this.props.setError('Username already taken');
-                    } else {
-                        this.setState({usernameValid: true});
-                    }
-                    this.setState({ loading: false });
-                },
-                (error) => {
-                    console.log(error);
-                    this.setState({ loading: false });
-                }
-            )
+            this.props.checkUsername(this.state.username)
+            .then((result) => {
+                this.setState({ loading: false });
+                this.setState({ usernameValid: true });
+            },
+            (error) => {
+                this.setState({ loading: false });
+                this.setState({ usernameValid: false });
+            })
         }
     }
     
@@ -70,25 +72,20 @@ class RegisterModal extends Component {
     
     submit() {
         this.setState({ loading: true });
-        var myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-        fetch("/register", { method: 'POST', body: JSON.stringify({ name: this.state.username, password: this.state.password }), headers: myHeaders })
-        .then((result) => {
-            return result.json()
-        })
-        .then(result => this.props.signin(result))
+        this.props.submit(this.state.username, this.state.password, this.props.socket)
+        .then(result => this.props.callback())
         .then((result) => {
             this.setState({ loading: false });
         },
         (error) => {
-            console.log(error);
+            console.error(error);
             this.setState({ loading: false });
-        })
+        });
     }
     
     render() {
         return (
-            <FormModal title="Register" showModal={this.props.showModal} submitted={this.props.submitted}
+            <FormModal title="Register" showModal={this.props.showModal} submitted={!this.props.showModal}
             submit={this.submit} loading={this.state.loading} enabled={this.state.usernameValid && this.state.passwordValid}>
                 <TextField label="Username" value={this.state.username} handleChange={this.handleUsernameChange}
                 errorText={this.props.error} />
@@ -101,4 +98,4 @@ class RegisterModal extends Component {
     }
 }
 
-export default RegisterModal;
+export default connect(mapDispatchToProps)(RegisterModal);

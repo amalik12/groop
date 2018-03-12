@@ -60,7 +60,7 @@ app.head('/api/v1/users', function(req, res){
 })
 
 app.get('/api/v1/rooms/:id', function (req, res) {
-  Room.find({ shortid: req.params.id }, { _id: 0 }, function (err, room) {
+  Room.findOne({ shortid: req.params.id }, { _id: 0 }, function (err, room) {
     if (err) return res.sendStatus(500);
     if (!room) return res.sendStatus(404);
     return res.status(200).send(room);
@@ -74,7 +74,8 @@ app.post('/api/v1/rooms/', function (req, res) {
   Room.count({}).then((result) => {
     count = result + 1;
     if (req.body.shortid) {
-      shortid = req.body.shortid;
+      // remove non URL-safe characters
+      shortid = req.body.shortid.replace(/[^a-zA-Z0-9-_]/g, '');
     } else {
       shortid = generate(count)
     }

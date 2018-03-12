@@ -1,6 +1,9 @@
 import { combineReducers } from 'redux'
 import {
-  ADD_MESSAGES, SET_ROOM_INFO, SIGNIN, SET_CURRENT_USERS, MEMBERS
+  ADD_MESSAGES, SET_ROOM_INFO, SET_CURRENT_USERS,
+  MEMBERS, LOGIN_SUCCESS, LOGIN_FAILURE, LOGIN_ERROR,
+  CLEAR_LOGIN_ERROR, CREATE_ROOM_START, CREATE_ROOM_FAILURE,
+  CREATE_ROOM_SUCCESS
 } from './actions'
 
 function messages(state = [], action) {
@@ -15,10 +18,10 @@ function messages(state = [], action) {
   }
 }
 
-function room(state = { name: '', creation_time: Date.now(), current_users: [], _id: -1 }, action) {
+function room(state = { name: '', creation_time: Date.now(), current_users: [], shortid: '' }, action) {
   switch (action.type) {
     case SET_ROOM_INFO:
-      return action.room
+      return { ...action.room, current_users: [] }
     case SET_CURRENT_USERS:
       return { ...state, current_users: action.users }
     default:
@@ -26,10 +29,40 @@ function room(state = { name: '', creation_time: Date.now(), current_users: [], 
   }
 }
 
-function modals(state = { signin: true, members: false }, action) {
+function login(state = { error: '', signed_in: false }, action) {
   switch (action.type) {
-    case SIGNIN:
+    case LOGIN_FAILURE:
+      return { ...state, signed_in: false }
+    case LOGIN_SUCCESS:
+      return { ...state, signed_in: true }
+    case LOGIN_ERROR:
+      return { ...state, error: action.text }
+    case CLEAR_LOGIN_ERROR:
+      return { ...state, error: '' }
+    default:
+      return state
+  }
+}
+
+function create_room(state = { error: '', loading: false, done: false }, action) {
+  switch (action.type) {
+    case CREATE_ROOM_START:
+      return { ...state, error: '', loading: true }
+    case CREATE_ROOM_SUCCESS:
+      return { ...state, error: '', loading: false, done: true }
+    case CREATE_ROOM_FAILURE:
+      return { ...state, error: 'An error occured.', loading: false }
+    default:
+      return state
+  }
+}
+
+function modals(state = { signin: false, members: false }, action) {
+  switch (action.type) {
+    case LOGIN_SUCCESS:
       return { ...state, signin: false }
+    case LOGIN_FAILURE:
+      return { ...state, signin: true }
     case MEMBERS:
       return { ...state, members: !state.members }
     default:
@@ -37,4 +70,4 @@ function modals(state = { signin: true, members: false }, action) {
   }
 }
 
-export default combineReducers({ messages, room, modals })
+export default combineReducers({ messages, room, modals, login, create_room })

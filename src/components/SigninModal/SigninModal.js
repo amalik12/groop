@@ -1,20 +1,21 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import { signin, addMessages } from '../../actions';
+import { login, register, clearLoginError } from '../../actions';
 import LoginModal from '../LoginModal';
 import RegisterModal from '../RegisterModal';
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    showModal: state.modals.signin,
-    room_id: state.room._id
+    error: state.login.error,
+    showModal: state.modals.signin
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    signin: () => dispatch(signin()),
-    addMessages: (messages) => dispatch(addMessages(messages))
+    login: (username, password, socket) => dispatch(login(username, password, socket)),
+    register: (username, password, socket) => dispatch(register(username, password, socket)),
+    clearLoginError: () => dispatch(clearLoginError())
   }
 }
 
@@ -22,56 +23,22 @@ export class SigninModal extends Component {
   constructor(props) {
     super(props);
     this.switchModal = this.switchModal.bind(this);
-    this.setError = this.setError.bind(this);
-    this.signin = this.signin.bind(this);
-    this.state = {showLogin: true, submitted: false, error: ''}
+    this.state = { showLogin: true }
   }
-  
-  signin(data) {
-    return new Promise((resolve, reject) => {
-      if (data && data.token) {
-        localStorage.setItem('token', data.token);
-        resolve(fetch("/api/v1/rooms/" + this.props.room_id + '/messages', { headers: { 'Authorization': localStorage.getItem('token') } }));
-      } else if (!this.state.error) {
-        this.setState({ error: 'An error occured.' });
-      }
-    })
-    .then(
-      (result) => {
-        if (result.status === 200) {
-          return result.json();
-        } else {
-          console.log('Error retrieving messages');
-          // TODO: alert user
-        }
-      },
-      (error) => {
-        console.log(error);
-      }
-    )
-    .then((data) => {
-      this.props.addMessages(data);
-      this.props.socket.open();
-      this.props.socket.emit("user", { room: this.props.room_id, user: localStorage.getItem('token') });
-      this.setState({ submitted: true });
-      this.props.signin();
-    })
-  }
-  
-  setError(text) {
-    this.setState({error: text});
-  }
-  
+
   switchModal() {
-    this.setState({showLogin: !this.state.showLogin, error: ''})
+    this.setState({ showLogin: !this.state.showLogin});
+    this.props.clearLoginError();
   }
   
   render() {
     let content;
     if (this.state.showLogin) {
-      content = <LoginModal showModal={this.props.showModal} signin={this.signin} switch={this.switchModal} setError={this.setError} submitted={this.state.submitted} error={this.state.error} />
+      content = <LoginModal showModal={this.props.showModal} socket={this.props.socket} submit={this.props.login}
+        callback={this.props.callback} switch={this.switchModal} clearLoginError={this.props.clearLoginError} error={this.props.error} />
     } else {
-      content = <RegisterModal showModal={this.props.showModal} signin={this.signin} switch={this.switchModal} setError={this.setError} submitted={this.state.submitted} error={this.state.error} />
+      content = <RegisterModal showModal={this.props.showModal} socket={this.props.socket} submit={this.props.register}
+      callback={this.props.callback} switch={this.switchModal} clearLoginError={this.props.clearLoginError} error={this.props.error} />
     }
     return (
       <div>

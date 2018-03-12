@@ -17,7 +17,7 @@ class LoginModal extends Component {
     } else {
       this.setState({ password: event.target.value });
     }
-    this.props.setError('');
+    this.props.clearLoginError();
   }
 
   handleKeyPress(event) {
@@ -30,25 +30,21 @@ class LoginModal extends Component {
   }
 
   submit() {
-    var myHeaders = new Headers();
     this.setState({ loading: true });
-    myHeaders.append("Content-Type", "application/json");
-    fetch("/login", { method: 'POST', body: JSON.stringify({ name: this.state.username, password: this.state.password }), headers: myHeaders })
+    this.props.submit(this.state.username, this.state.password, this.props.socket)
+    .then(result => this.props.callback())
     .then((result) => {
-      if (result.status !== 200) {
-        this.props.setError('Username/password is incorrect');
-        throw new Error(result.status);
-      }
-      return result.json()
-    })
-    .then(result => this.props.signin(result))
-    .then((result) => { this.setState({ loading: false }) })
-    .catch(error => { console.error(error); this.setState({ loading: false }); })
+      this.setState({ loading: false });
+    },
+      (error) => {
+        console.error(error);
+        this.setState({ loading: false });
+    });
   }
   
   render() {
     return (
-      <FormModal title="Login" showModal={this.props.showModal} submitted={this.props.submitted} submit={this.submit} loading={this.state.loading} enabled={this.state.username && this.state.password}>
+      <FormModal title="Login" showModal={this.props.showModal} submitted={!this.props.showModal} submit={this.submit} loading={this.state.loading} enabled={this.state.username && this.state.password}>
         <TextField label="Username" onKeyPress={this.handleKeyPress} value={this.state.username} handleChange={this.handleChange} errorText={this.props.error}/>
         <TextField label="Password" onKeyPress={this.handleKeyPress} password={true} value={this.state.password} handleChange={this.handleChange} />
         <span className="link" onClick={this.props.switch}>Create an account</span>

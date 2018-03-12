@@ -30,12 +30,11 @@ export class Input extends Component {
 			myHeaders.append("Authorization", localStorage.getItem('token'));
 			myHeaders.append("Content-Type", "application/json");
 			fetch("/api/v1/rooms/" + this.props.room_id + "/messages", { method: 'POST', body: JSON.stringify({ message: event.target.value }), headers: myHeaders })
-				.then((result) => {},
-				(error) => {
-					console.log(error);
-					// TODO: alert user
-				}
-			)
+			.then((result) => {},
+			(error) => {
+				console.log(error);
+				// TODO: alert user
+			})
 			event.target.value = '';
   		}
 	}

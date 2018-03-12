@@ -1,21 +1,57 @@
-import React from 'react';
+import React, { Component } from 'react';
 import './App.css';
+import { auth, getRoomInfo, getRoomMessages } from '../../actions';
+import { connect } from 'react-redux';
 import Header from '../Header';
 import MessageList from '../MessageList';
 import Input from '../Input';
 import SigninModal from '../SigninModal';
-import MembersModal from '../MembersModal/MembersModal';
+import MembersModal from '../MembersModal';
 
-let App = (props) => {
-  return (
-    <div className="App">
-      <SigninModal socket={props.socket} />
-      <MembersModal />
-      <Header />
-      <MessageList />
-      <Input />
-    </div>
-  );
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    isLoggedIn: state.login.signed_in,
+    shortid: state.room.shortid
+  }
 }
 
-export default App;
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    auth: (token) => dispatch(auth(token)),
+    getRoomInfo: (shortid) => dispatch(getRoomInfo(shortid)),
+    getRoomMessages: (shortid) => dispatch(getRoomMessages(shortid))
+  }
+}
+
+class App extends Component {
+  componentDidMount() {
+    let shortid = this.props.location.pathname.substr(1);
+    if (shortid !== this.props.shortid) {
+      this.props.getRoomInfo(shortid)
+    }
+    this.props.auth(localStorage.getItem('token'))
+    .then((result) => {
+      if (this.props.isLoggedIn) {
+        this.props.socket.open();
+        this.props.socket.emit("user", { room: shortid, user: localStorage.getItem('token') });
+        return this.props.getRoomMessages(shortid);
+      }
+    })
+    .catch((error) => console.error(error));
+  }
+  
+  render() {
+    return (
+      <div className="App">
+        <SigninModal socket={this.props.socket} callback={this.props.getRoomMessages} />
+        <MembersModal />
+        <Header />
+        <MessageList />
+        <Input />
+      </div>
+    );
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

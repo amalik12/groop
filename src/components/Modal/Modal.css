@@ -59,34 +59,3 @@
   display: flex;
   overflow: hidden;
 }
-
-.modal-button-primary {
-  text-align: center;
-  border: none;
-  font-family: 'Source Sans Pro', sans-serif;
-  font-size: 16px;
-  background: #2d3d7d;
-  color: white;
-  padding: 12px 0px;
-  text-transform: uppercase;
-  flex-grow: 1;
-  cursor: pointer;
-  max-height: 45px;
-}
-
-.modal-button-primary > * {
-  background: #2d3d7d;
-}
-
-.modal-button-primary.disabled {
-  background: #aeaeae;
-  pointer-events: none;
-}
-
-.modal-button-primary.loading {
-  color: #aeaeae;
-}
-
-.modal-button-primary.disabled > * {
-  background: #aeaeae;
-}
