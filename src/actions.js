@@ -14,6 +14,8 @@ export const CLEAR_LOGIN_ERROR = 'CLEAR_LOGIN_ERROR';
 export const CREATE_ROOM_START = 'CREATE_ROOM_START';
 export const CREATE_ROOM_SUCCESS = 'CREATE_ROOM_SUCCESS';
 export const CREATE_ROOM_FAILURE = 'CREATE_ROOM_FAILURE';
+export const CREATE_ROOM_NAME_ERROR = 'CREATE_ROOM_NAME_ERROR';
+export const CREATE_ROOM_SHORTID_ERROR = 'CREATE_ROOM_SHORTID_ERROR';
 
 /*
  * action creators
@@ -57,6 +59,14 @@ export function createRoomSuccess() {
 
 export function createRoomFailure() {
   return { type: CREATE_ROOM_FAILURE }
+}
+
+export function setNameError(text) {
+  return { type: CREATE_ROOM_NAME_ERROR, text }
+}
+
+export function setShortidError(text) {
+  return { type: CREATE_ROOM_SHORTID_ERROR, text }
 }
 
 export function members() {
@@ -130,15 +140,33 @@ export function checkUsername(username) {
     .then(
       (result) => {
         if (result.status >= 400 && result.status < 600) {
-          dispatch(loginError('Username already taken'));
-          return Promise.reject(result.status);
+          return Promise.resolve(result.status);
         }
-        return Promise.resolve(result.status);
+        dispatch(loginError('Username already taken'));
+        return Promise.reject(result.status);
       },
       (error) => {
         console.error(error);
       }
     )
+  }
+}
+
+export function checkShortid(shortid) {
+  return (dispatch) => {
+    return fetch("/api/v1/rooms?shortid=" + shortid, { method: 'HEAD' })
+      .then(
+        (result) => {
+          if (result.status >= 400 && result.status < 600) {
+            return Promise.resolve(result.status);
+          }
+          dispatch(setShortidError('URL already taken'));
+          return Promise.reject(result.status);
+        },
+        (error) => {
+          console.error(error);
+        }
+      )
   }
 }
 

@@ -50,13 +50,28 @@ app.head('/api/v1/users', function(req, res){
       if (user) {
         res.sendStatus(200);
       } else {
-        if (err) console.error(err);
+        res.sendStatus(404);
+      }
+    })
+    .catch((error) => console.error(error))
+  } else {
+    res.sendStatus(404);
+  }  
+})
+
+app.head('/api/v1/rooms', function (req, res) {
+  if (req.query.shortid) {
+    Room.findOne({ shortid: req.query.shortid }, function (err, room) {
+      console.log(req.query.shortid);
+      if (room) {
+        res.sendStatus(200);
+      } else {
         res.sendStatus(404);
       }
     })
   } else {
     res.sendStatus(404);
-  }  
+  }
 })
 
 app.get('/api/v1/rooms/:id', function (req, res) {

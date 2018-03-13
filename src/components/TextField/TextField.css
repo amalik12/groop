@@ -23,7 +23,7 @@
   transition: 0.3s;
 }
 
-.textfield-label.large {
+.textfield.large .textfield-label {
   font-size: 28px;
 }
 
@@ -46,7 +46,7 @@
   font-size: 17px;
 }
 
-.textfield-input.large {
+.textfield.large .textfield-input {
   font-size: 28px;
 }
 
@@ -70,4 +70,8 @@
   right: 0;
   top: 29px;
   color: #d80e0e;
+}
+
+.textfield.large .textfield-error {
+  top: 42px;
 }

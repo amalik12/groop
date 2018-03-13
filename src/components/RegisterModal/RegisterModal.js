@@ -21,7 +21,6 @@ export class RegisterModal extends Component {
         this.checkPassword = this.checkPassword.bind(this);
         this.submit = this.submit.bind(this);
         this.usernameTimer = undefined;
-        this.passwordTimer = undefined;
     }
     
     handleUsernameChange(event) {
@@ -33,13 +32,22 @@ export class RegisterModal extends Component {
     
     handlePasswordChange(event) {
         clearTimeout(this.passwordTimer);
-        this.setState({ passwordValid: false, passwordError: '' });
+        this.setState({ passwordError: '' });
         if (event.target.name === "Confirm password") {
             this.setState({ confirm: event.target.value });
         } else {
             this.setState({ password: event.target.value });
         }
-        this.passwordTimer = setTimeout(this.checkPassword, 700);
+
+        // validate password
+        if (this.state.password && !this.props.error && this.state.password === this.state.confirm) {
+            this.setState({ passwordValid: true });
+        } else {
+            this.setState({ passwordValid: false });
+            if (this.state.password || this.state.confirm) {
+                this.setState({ passwordError: 'Passwords do not match' });
+            }
+        }
     }
     
     checkUsername() {
@@ -47,27 +55,12 @@ export class RegisterModal extends Component {
             this.setState({ loading: true });
             this.props.checkUsername(this.state.username)
             .then((result) => {
-                this.setState({ loading: false });
-                this.setState({ usernameValid: true });
+                this.setState({ loading: false, usernameValid: true });
             },
             (error) => {
-                this.setState({ loading: false });
-                this.setState({ usernameValid: false });
+                this.setState({ loading: false, usernameValid: false });
             })
         }
-    }
-    
-    checkPassword() {
-        this.setState({ loading: true });
-        if (this.state.password && !this.props.error && this.state.password === this.state.confirm) {
-            this.setState({ passwordValid: true });
-        } else {
-            this.setState({ passwordValid: false });
-            if (this.state.password || this.state.confirm){
-                this.setState({ passwordError: 'Passwords do not match' });
-            }
-        }
-        this.setState({ loading: false });
     }
     
     submit() {

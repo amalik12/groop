@@ -3,7 +3,7 @@ import {
   ADD_MESSAGES, SET_ROOM_INFO, SET_CURRENT_USERS,
   MEMBERS, LOGIN_SUCCESS, LOGIN_FAILURE, LOGIN_ERROR,
   CLEAR_LOGIN_ERROR, CREATE_ROOM_START, CREATE_ROOM_FAILURE,
-  CREATE_ROOM_SUCCESS
+  CREATE_ROOM_SUCCESS, CREATE_ROOM_NAME_ERROR, CREATE_ROOM_SHORTID_ERROR
 } from './actions'
 
 function messages(state = [], action) {
@@ -44,14 +44,18 @@ function login(state = { error: '', signed_in: false }, action) {
   }
 }
 
-function create_room(state = { error: '', loading: false, done: false }, action) {
+function create_room(state = { name_error: '', shortid_error: '', loading: false, done: false }, action) {
   switch (action.type) {
     case CREATE_ROOM_START:
-      return { ...state, error: '', loading: true }
+      return { ...state, loading: true }
     case CREATE_ROOM_SUCCESS:
-      return { ...state, error: '', loading: false, done: true }
+      return { ...state, loading: false, done: true }
     case CREATE_ROOM_FAILURE:
-      return { ...state, error: 'An error occured.', loading: false }
+      return { ...state, name_error: 'An error occured.', loading: false }
+    case CREATE_ROOM_NAME_ERROR:
+      return { ...state, name_error: action.text, loading: false }
+    case CREATE_ROOM_SHORTID_ERROR:
+      return { ...state, shortid_error: action.text, loading: false }
     default:
       return state
   }
