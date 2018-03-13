@@ -12,7 +12,7 @@ require('dotenv').config();
 
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
-var mongoDB = 'mongodb://127.0.0.1/chat_db';
+var mongoDB = process.env.MONGODB_URI;
 var secret = process.env.TOKEN_SECRET;
 
 var Room = require('./models/room.js');
