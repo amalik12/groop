@@ -62,7 +62,6 @@ app.head('/api/v1/users', function(req, res){
 app.head('/api/v1/rooms', function (req, res) {
   if (req.query.shortid) {
     Room.findOne({ shortid: req.query.shortid }, function (err, room) {
-      console.log(req.query.shortid);
       if (room) {
         res.sendStatus(200);
       } else {

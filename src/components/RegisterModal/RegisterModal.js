@@ -4,6 +4,12 @@ import { checkUsername } from '../../actions';
 import TextField from '../TextField';
 import FormModal from '../FormModal';
 
+const mapStateToProps = (state, ownProps) => {
+    return {
+        room_id: state.room.shortid
+    }
+}
+
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         checkUsername: (username) => dispatch(checkUsername(username))
@@ -31,22 +37,10 @@ export class RegisterModal extends Component {
     }
     
     handlePasswordChange(event) {
-        clearTimeout(this.passwordTimer);
-        this.setState({ passwordError: '' });
         if (event.target.name === "Confirm password") {
-            this.setState({ confirm: event.target.value });
+            this.setState({ passwordError: '', confirm: event.target.value }, () => this.checkPassword());
         } else {
-            this.setState({ password: event.target.value });
-        }
-
-        // validate password
-        if (this.state.password && !this.props.error && this.state.password === this.state.confirm) {
-            this.setState({ passwordValid: true });
-        } else {
-            this.setState({ passwordValid: false });
-            if (this.state.password || this.state.confirm) {
-                this.setState({ passwordError: 'Passwords do not match' });
-            }
+            this.setState({ passwordError: '', password: event.target.value }, () => this.checkPassword());
         }
     }
     
@@ -63,10 +57,21 @@ export class RegisterModal extends Component {
         }
     }
     
+    checkPassword() {
+        if (this.state.password !== '' && (this.state.password === this.state.confirm)) {
+            this.setState({ passwordError: '', passwordValid: true });
+        } else {
+            this.setState({ passwordValid: false });
+            if (this.state.password !== '' && this.state.confirm !== '') {
+                this.setState({ passwordError: 'Passwords do not match' });
+            }
+        }
+    }
+
     submit() {
         this.setState({ loading: true });
         this.props.submit(this.state.username, this.state.password, this.props.socket)
-        .then(result => this.props.callback())
+        .then(result => this.props.callback(this.props.room_id))
         .then((result) => {
             this.setState({ loading: false });
         },
@@ -91,4 +96,4 @@ export class RegisterModal extends Component {
     }
 }
 
-export default connect(mapDispatchToProps)(RegisterModal);
+export default connect(mapStateToProps, mapDispatchToProps)(RegisterModal);

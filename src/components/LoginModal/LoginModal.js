@@ -1,6 +1,13 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import TextField from '../TextField';
 import FormModal from '../FormModal';
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    room_id: state.room.shortid
+  }
+}
 
 class LoginModal extends Component {
   constructor(props) {
@@ -32,7 +39,7 @@ class LoginModal extends Component {
   submit() {
     this.setState({ loading: true });
     this.props.submit(this.state.username, this.state.password, this.props.socket)
-    .then(result => this.props.callback())
+    .then(result => this.props.callback(this.props.room_id))
     .then((result) => {
       this.setState({ loading: false });
     },
@@ -53,4 +60,4 @@ class LoginModal extends Component {
   }
 }
 
-export default LoginModal;
+export default connect(mapStateToProps)(LoginModal);
