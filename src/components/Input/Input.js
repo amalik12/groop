@@ -5,7 +5,7 @@ import './Input.css';
 
 const mapStateToProps = (state, ownProps) => {
 	return {
-		room_id: state.room._id
+		room_id: state.room.shortid
 	}
 }
 
