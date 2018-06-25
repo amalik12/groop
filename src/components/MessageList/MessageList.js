@@ -25,6 +25,25 @@ export class MessageList extends Component {
   }
 
   render(){
+    let messages = [];
+    let prev = null;
+    for (let index = 0; index < this.props.messages.length; index++) {
+      let message = this.props.messages[index];
+      let group_message = false
+      if (prev !== null && prev.user._id === message.user._id &&
+        (Date.parse(message.creation_time) - Date.parse(prev.creation_time)) / 1000 / 60 <= 30) {
+          // group messages by the same author within 30 min together
+          group_message = true;
+      }
+      messages.push(<CSSTransition
+        key={index}
+        classNames="message-anim"
+        timeout={200}>
+        <Message simple={group_message} {...message} />
+      </CSSTransition>)
+      prev = message
+    }
+
     return (
       <Scrollbars
       renderThumbVertical={props => <div {...this.props} dispatch={null} className="thumb-vertical"/>}
@@ -32,14 +51,7 @@ export class MessageList extends Component {
       >
       <div className="MessageList" id="chat-messages" ref={(element) => this.element = element }>
         <TransitionGroup>
-          {this.props.messages.map((message, index) => (
-            <CSSTransition
-            key={index}
-            classNames="message-anim"
-            timeout={200}>
-              <Message  {...message} />
-            </CSSTransition>
-          ))}
+          {messages}
         </TransitionGroup>
       </div>
       </Scrollbars>

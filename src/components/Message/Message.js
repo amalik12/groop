@@ -6,12 +6,12 @@ import Timestamp from '../Timestamp';
 let Message = (props) => {
   return (
     <div className="Message">
-      <Avatar user={props.user} />
-      <div className="message-details">
-        <div className="message-info">
+      {!props.simple && <Avatar user={props.user} />}
+      <div className={"message-details" + (props.simple ? ' simple' : '')}>
+        {!props.simple && <div className="message-info">
           <span className="message-sender">{props.user.name}</span>
           <span className="message-time"><Timestamp time={props.creation_time} /></span>
-        </div>
+        </div>}
         <div className="message-text">
           {props.text}
         </div>
