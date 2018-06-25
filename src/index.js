@@ -28,6 +28,7 @@ ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
       <div>
+        {/* <Route exact path='/' component={Home} /> */}
         <Route exact path='/' component={CreateRoom} />
         <Route path='/:id' render={(props) => <App {...props} socket={socket} />} />
       </div>

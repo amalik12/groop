@@ -25,6 +25,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 }
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.initChat = this.initChat.bind(this);
+  }
+
   componentDidMount() {
     let shortid = this.props.location.pathname.substr(1);
     if (shortid !== this.props.shortid) {
@@ -33,18 +38,23 @@ class App extends Component {
     this.props.auth(localStorage.getItem('token'))
     .then((result) => {
       if (this.props.isLoggedIn) {
-        this.props.socket.open();
-        this.props.socket.emit("user", { room: shortid, user: localStorage.getItem('token') });
-        return this.props.getRoomMessages(shortid);
+        this.initChat();
       }
     })
     .catch((error) => console.error(error));
+  }
+
+  initChat() {
+    let shortid = this.props.location.pathname.substr(1);
+    this.props.socket.open();
+    this.props.socket.emit("user", { room: shortid, user: localStorage.getItem('token') });
+    return this.props.getRoomMessages(shortid);
   }
   
   render() {
     return (
       <div className="App">
-        <SigninModal socket={this.props.socket} callback={this.props.getRoomMessages} />
+        <SigninModal socket={this.props.socket} callback={this.initChat} />
         <MembersModal />
         <Header />
         <MessageList />

@@ -1,7 +1,7 @@
 import React from 'react';
 import './CreateRoom.css';
 import TextField from '../TextField';
-import Button from '../Button/Button';
+import Button from '../Button';
 import { NAME_LABEL, SHORTID_LABEL } from './CreateRoom';
 
 let CreateRoomForm = (props) => {

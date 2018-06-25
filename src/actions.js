@@ -14,6 +14,7 @@ export const CLEAR_LOGIN_ERROR = 'CLEAR_LOGIN_ERROR';
 export const CREATE_ROOM_START = 'CREATE_ROOM_START';
 export const CREATE_ROOM_SUCCESS = 'CREATE_ROOM_SUCCESS';
 export const CREATE_ROOM_FAILURE = 'CREATE_ROOM_FAILURE';
+export const CREATE_ROOM_RESET = 'CREATE_ROOM_RESET';
 export const CREATE_ROOM_NAME_ERROR = 'CREATE_ROOM_NAME_ERROR';
 export const CREATE_ROOM_SHORTID_ERROR = 'CREATE_ROOM_SHORTID_ERROR';
 
@@ -59,6 +60,10 @@ export function createRoomSuccess() {
 
 export function createRoomFailure() {
   return { type: CREATE_ROOM_FAILURE }
+}
+
+export function createRoomReset() {
+  return { type: CREATE_ROOM_RESET }
 }
 
 export function setNameError(text) {

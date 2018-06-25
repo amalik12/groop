@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import CreateRoomForm from './CreateRoomForm';
 import SigninModal from '../SigninModal';
-import { createRoom, setNameError, setShortidError, checkShortid } from '../../actions';
+import { createRoom, setNameError, setShortidError, checkShortid, createRoomReset } from '../../actions';
 
 export const NAME_LABEL = "Your room name";
 export const SHORTID_LABEL = "<random url>";
@@ -17,7 +17,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         createRoom: (name, shortid) => dispatch(createRoom(name, shortid)),
         checkShortid: (shortid) => dispatch(checkShortid(shortid)),
         setNameError: (text) => dispatch(setNameError(text)),
-        setShortidError: (text) => dispatch(setShortidError(text))
+        setShortidError: (text) => dispatch(setShortidError(text)),
+        createRoomReset: () => dispatch(createRoomReset())
     }
 }
 
@@ -29,6 +30,10 @@ class CreateRoom extends Component {
         this.submit = this.submit.bind(this);
         this.checkShortid = this.checkShortid.bind(this);
         this.shortidTimer = undefined;
+    }
+
+    onComponentMount() {
+        this.props.createRoomReset();
     }
 
     handleChange(event) {
