@@ -19,7 +19,7 @@ class Timestamp extends Component {
 
   render() {
     return (
-      <span>{moment(this.props.time).fromNow()}</span>
+      <span title={moment(this.props.time).format('LLL')}>{moment(this.props.time).fromNow()}</span>
     );
   }
 }
