@@ -111,7 +111,7 @@ app.post('/api/v1/rooms/:id/messages', verifyToken, function (req, res) {
     return Message.findById(message.id).populate('user', { password: 0 }).exec()
   })
   .then((message) => {
-    io.emit('message', message);
+    io.to(req.params.id).emit('message', message);
     return res.sendStatus(200);
   })
   .catch((err) => {
@@ -172,7 +172,7 @@ io.on('connection', function(socket){
     })
     .then((users) => {
       if (!users) throw Error('room is empty');
-      io.emit('current users', users);
+      io.to(socket.room).emit('current users', users);
     })
     .catch((err) => {
       console.error(err);
@@ -191,7 +191,8 @@ io.on('connection', function(socket){
       })
       .then((users) => {
         if (!users) throw Error('room is empty');
-        io.emit('current users', users);
+        socket.join(socket.room);
+        io.to(socket.room).emit('current users', users);
       })
       .catch((err) => {
         console.error(err);

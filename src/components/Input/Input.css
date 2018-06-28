@@ -14,7 +14,9 @@
   font-family: 'Source Sans Pro', sans-serif;
   overflow: hidden;
   box-sizing: border-box;
+  outline: none;
 }
+
 .input-inner::placeholder {
   color: #9e9e9e;
 }
