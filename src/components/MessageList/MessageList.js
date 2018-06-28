@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import './MessageList.css';
-import Message from '../Message';
+import MessageGroup from '../MessageGroup';
 import { Scrollbars } from 'react-custom-scrollbars';
 
 const mapStateToProps = (state, ownProps) => {
@@ -27,22 +27,33 @@ export class MessageList extends Component {
   render(){
     let messages = [];
     let prev = null;
+    let group = []
+    let numGroups = 0
     for (let index = 0; index < this.props.messages.length; index++) {
       let message = this.props.messages[index];
-      let group_message = false
-      if (prev !== null && prev.user._id === message.user._id &&
-        (Date.parse(message.creation_time) - Date.parse(prev.creation_time)) / 1000 / 60 <= 30) {
-          // group messages by the same author within 30 min together
-          group_message = true;
+      if (prev !== null && (prev.user._id !== message.user._id ||
+        (Date.parse(message.creation_time) - Date.parse(prev.creation_time)) / 1000 / 60 > 30)) {
+          // create a separaate message group if not from same author or not in 30 min period
+          messages.push(<CSSTransition
+            key={numGroups}
+            classNames="message-anim"
+            timeout={200}>
+              <MessageGroup messages={group} />
+            </CSSTransition>)
+          group = []
+          numGroups++;
       }
-      messages.push(<CSSTransition
-        key={index}
-        classNames="message-anim"
-        timeout={200}>
-        <Message simple={group_message} {...message} />
-      </CSSTransition>)
+      group.push(message)
       prev = message
     }
+
+    if (group.length)
+      messages.push(<CSSTransition
+        key={numGroups}
+        classNames="message-anim"
+        timeout={200}>
+          <MessageGroup messages={group} />
+        </CSSTransition>)
 
     return (
       <Scrollbars

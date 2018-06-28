@@ -1,10 +1,6 @@
 .message-details {
   display: inline-block;
-}
-
-.message-details.simple {
-  margin-top: -12px;
-  margin-left: 61px;
+  vertical-align: top;
 }
 
 .message-sender {
@@ -13,21 +9,41 @@
   margin-right: 8px;
 }
 
+.message-left {
+  display: inline-block;
+  width: 49px;
+  margin-right: 12px;
+}
+
+.message-info {
+  margin-bottom: 8px;
+}
+
 .message-time {
   color: #acacad;
   font-size: 15px;
 }
 
+.MessageGroup {
+  margin-bottom: 25px;
+}
+
 .Message {
-  display: flex;
-  align-items: center;
-  margin-bottom: 15px;
+  margin-bottom: 4px;
+}
+
+.message-left .message-time {
+  visibility: hidden;
+  font-size: 13px;
+}
+
+.Message:hover .message-time {
+  visibility: visible;
 }
 
 .Message .Avatar {
   width: 46px;
   height: 46px;
-  margin-right: 15px;
 }
 
 .message-anim-enter {
