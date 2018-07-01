@@ -6,35 +6,12 @@
     "bcryptjs": "^2.4.3",
     "dotenv": "^4.0.0",
     "express": "^4.16.3",
-    "jquery": "^3.3.1",
     "jsonwebtoken": "^8.3.0",
-    "moment": "^2.22.2",
     "mongoose": "^5.1.6",
-    "normalize.css": "^7.0.0",
-    "react": "^16.4.1",
-    "react-custom-scrollbars": "^4.2.1",
-    "react-dom": "^16.4.1",
-    "react-modal": "^3.4.5",
-    "react-redux": "^5.0.7",
-    "react-router-dom": "^4.3.1",
-    "react-scripts": "1.0.17",
-    "react-transition-group": "^2.3.1",
-    "redux": "^3.7.2",
-    "redux-thunk": "^2.3.0",
-    "socket.io": "^2.1.1",
-    "socket.io-client": "^2.1.1"
+    "redis": "^2.8.0",
+    "socket.io": "^2.1.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
-    "db_wipe": "node src/util/wipe.js",
-    "create_index": "python src/util/indexcreate.py"
-  },
-  "proxy": "http://localhost:5000",
-  "devDependencies": {
-    "enzyme": "^3.3.0",
-    "enzyme-adapter-react-16": "^1.1.1"
+    "start": "node server.js"
   }
 }
