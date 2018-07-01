@@ -27,8 +27,8 @@ app.get('/', function(req, res){
 });
 
 mongoose.connect(mongoDB)
-.then(() => console.log('Database connection succesful'))
-.catch((err) => console.error(err));
+  .then(() => console.log('Database connection successful'))
+  .catch((err) => console.error(err));
 
 http.listen(5000, function () {
   console.log('Listening on port 5000');

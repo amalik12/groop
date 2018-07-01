@@ -1,0 +1,31 @@
+version: '3'
+
+volumes:
+  db_data:
+
+services:
+  db:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    volumes:
+      - db_data:/var/lib/mongodb/
+
+  server:
+    build: ./
+    ports:
+      - 5000:5000
+    links:
+      - db
+    environment:
+      - TOKEN_SECRET=${TOKEN_SECRET}
+      - MONGODB_URI=${MONGODB_URI}
+
+  app:
+    build: ./app
+    expose:
+      - 3000
+    ports:
+      - 3000:3000
+    links:
+      - server  
