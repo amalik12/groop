@@ -8,11 +8,14 @@ var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
 var verifyToken = require('./verifyToken');
 var generate = require('./generateId');
+var redis = require("redis");
+var redisHelp = require('./redisHelp');
 require('dotenv').config();
 
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
-var mongoDB = process.env.MONGODB_URI;
+var redisUri = process.env.REDIS_URI;
+var mongoDBUri = process.env.MONGODB_URI;
 var secret = process.env.TOKEN_SECRET;
 
 var Room = require('./models/room.js');
@@ -26,7 +29,14 @@ app.get('/', function(req, res){
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
-mongoose.connect(mongoDB)
+var sub = redis.createClient(redisUri);
+sub.on("error", function (err) {
+  console.log("Error " + err);
+});
+sub.psubscribe('*_users');
+sub.psubscribe('*_typing');
+
+mongoose.connect(mongoDBUri)
   .then(() => console.log('Database connection successful'))
   .catch((err) => console.error(err));
 
@@ -163,16 +173,20 @@ app.post('/register', function (req, res) {
   });
 })
 
+sub.on('pmessage', (pattern, channel, message) => {
+  if (pattern === '*_users') {
+    let room = channel.replace('_users', '');
+    let users = JSON.parse(message).map((user) => JSON.parse(user));
+    io.to(room).emit('current users', users)
+  }
+})
+
 io.on('connection', function(socket){
   socket.on('disconnect', function(){
-    User.findByIdAndUpdate(socket.user, { room: undefined })
+    User.findById(socket.user, { password: 0 })
     .then((user) => {
       if (!user) throw Error('Disconnect: user not found');
-      return User.find({ room: socket.room }, { password: 0 })
-    })
-    .then((users) => {
-      if (!users) throw Error('room is empty');
-      io.to(socket.room).emit('current users', users);
+      redisHelp.removeUser(socket.room, JSON.stringify(user));
     })
     .catch((err) => {
       console.error(err);
@@ -184,15 +198,11 @@ io.on('connection', function(socket){
       if (err) console.error(err);
       socket.user = decoded.id;
       socket.room = data.room;
-      User.findByIdAndUpdate(decoded.id, { room: data.room })
+      User.findById(decoded.id, { password: 0 })
       .then((user) => {
         if (!user) throw Error('Connect: user not found');
-        return User.find({ room: data.room }, { password: 0 })
-      })
-      .then((users) => {
-        if (!users) throw Error('room is empty');
         socket.join(socket.room);
-        io.to(socket.room).emit('current users', users);
+        redisHelp.addUser(socket.room, JSON.stringify(user));
       })
       .catch((err) => {
         console.error(err);
