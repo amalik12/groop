@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import $ from 'jquery';
 import './Input.css';
+import TypingText from '../TypingText';
 
 const mapStateToProps = (state, ownProps) => {
 	return {
 		room_id: state.room.shortid
 	}
 }
+
 
 export class Input extends Component {
 	constructor(props) {
@@ -19,6 +21,7 @@ export class Input extends Component {
 	componentDidMount() {
 		this.height = this.textInput.style.height;
 		this.lastTyping = 0;
+		this.typeInterval = 4000;
 	}
 
 	handleKeyPress(event) {
@@ -38,7 +41,7 @@ export class Input extends Component {
 				// TODO: alert user
 			});
 			event.target.value = '';
-		} else if (Date.now() - this.lastTyping > 5000) {
+		} else if (Date.now() - this.lastTyping > this.typeInterval) {
 			this.lastTyping = Date.now();
 			fetch("/api/v1/rooms/" + this.props.room_id + "/typing", { method: 'POST', headers: myHeaders })
 			.then((result) => {},
@@ -56,6 +59,7 @@ export class Input extends Component {
 	render() {
 		return (
 			<div className="Input">
+				<TypingText />
 				<textarea className="input-inner" ref={(input) => { this.textInput = input; }} onKeyPress={this.handleKeyPress} onChange={this.handleChange} placeholder="Type a message...">
 				</textarea>
 			</div>
