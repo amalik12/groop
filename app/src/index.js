@@ -24,6 +24,10 @@ socket.on('current users', function (users) {
   store.dispatch(setCurrentUsers(users))
 });
 
+socket.on('typing', function (users) {
+  console.log(users);
+});
+
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>

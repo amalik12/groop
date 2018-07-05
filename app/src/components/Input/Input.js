@@ -18,25 +18,35 @@ export class Input extends Component {
 
 	componentDidMount() {
 		this.height = this.textInput.style.height;
+		this.lastTyping = 0;
 	}
 
 	handleKeyPress(event) {
-		if(event.key === 'Enter'){
+		var myHeaders = new Headers();
+		myHeaders.append("Authorization", localStorage.getItem('token'));
+		myHeaders.append("Content-Type", "application/json");
+		if(event.key === 'Enter') {
 			event.preventDefault();
+
 			if (!event.target.value.trim()) {
 				return
 			}
-			var myHeaders = new Headers();
-			myHeaders.append("Authorization", localStorage.getItem('token'));
-			myHeaders.append("Content-Type", "application/json");
 			fetch("/api/v1/rooms/" + this.props.room_id + "/messages", { method: 'POST', body: JSON.stringify({ message: event.target.value }), headers: myHeaders })
 			.then((result) => {},
 			(error) => {
 				console.log(error);
 				// TODO: alert user
-			})
+			});
 			event.target.value = '';
-  		}
+		} else if (Date.now() - this.lastTyping > 5000) {
+			this.lastTyping = Date.now();
+			fetch("/api/v1/rooms/" + this.props.room_id + "/typing", { method: 'POST', headers: myHeaders })
+			.then((result) => {},
+			(error) => {
+				console.log(error);
+				// TODO: alert user
+			});
+		}
 	}
 
 	handleChange(event) {

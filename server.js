@@ -138,6 +138,15 @@ app.get('/api/v1/rooms/:id/messages', verifyToken, function (req, res) {
   })
 })
 
+app.post('/api/v1/rooms/:id/typing', verifyToken, function (req, res) {
+  User.findById(req.userId, { password: 0 }, function (err, user) {
+    if (err) return res.sendStatus(500);
+    if (!user) return res.sendStatus(404);
+    redisHelp.addTyping(req.params.id, JSON.stringify(user));
+    res.sendStatus(200);
+  })
+})
+
 app.post('/login', function (req, res) {
   User.findOne({ name: req.body.name }, function (err, user) {
     if (err) return res.sendStatus(500);
@@ -178,6 +187,10 @@ sub.on('pmessage', (pattern, channel, message) => {
     let room = channel.replace('_users', '');
     let users = JSON.parse(message).map((user) => JSON.parse(user));
     io.to(room).emit('current users', users)
+  } else if (pattern === '*_typing') {
+    let room = channel.replace('_typing', '');
+    let users = JSON.parse(message).map((user) => JSON.parse(user));
+    io.to(room).emit('typing', users)
   }
 })
 
