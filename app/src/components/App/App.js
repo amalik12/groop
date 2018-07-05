@@ -32,10 +32,8 @@ class App extends Component {
 
   componentDidMount() {
     let shortid = this.props.location.pathname.substr(1);
-    if (shortid !== this.props.shortid) {
-      this.props.getRoomInfo(shortid)
-    }
-    this.props.auth(localStorage.getItem('token'))
+    this.props.getRoomInfo(shortid)
+    .then(this.props.auth(localStorage.getItem('token')))
     .then((result) => {
       if (this.props.isLoggedIn) {
         this.initChat();
