@@ -29,7 +29,11 @@ export class Input extends Component {
 		myHeaders.append("Content-Type", "application/json");
 		if(event.key === 'Enter') {
 			event.preventDefault();
-
+			if (event.shiftKey) {
+				event.target.value += '\n';
+				$(this.textInput).outerHeight(this.height).outerHeight(this.textInput.scrollHeight);
+				return
+			}
 			if (!event.target.value.trim()) {
 				return
 			}
@@ -40,6 +44,7 @@ export class Input extends Component {
 				// TODO: alert user
 			});
 			event.target.value = '';
+			$(this.textInput).outerHeight(this.height).outerHeight(this.textInput.scrollHeight);
 		} else if (Date.now() - this.lastTyping > this.typeInterval) {
 			this.lastTyping = Date.now();
 			fetch("/api/v1/rooms/" + this.props.room_id + "/typing", { method: 'POST', headers: myHeaders })
