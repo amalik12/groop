@@ -46,11 +46,11 @@ http.listen(5000, function () {
 
 var NUM_AVATARS = 8;
 
-app.head('/auth', verifyToken, function (req, res) {
+app.get('/auth', verifyToken, function (req, res) {
   User.findById(req.userId, function (err, user) {
     if (err) return res.sendStatus(500);
     if (!user) return res.sendStatus(404);
-    res.sendStatus(200);
+    res.status(200).send(user);
   })
 })
 
@@ -118,10 +118,11 @@ app.post('/api/v1/rooms/:id/messages', verifyToken, function (req, res) {
   if (!req.body || !req.body.message) return res.sendStatus(400);
   Message.create({ text: req.body.message, user: req.userId, room: req.params.id })
   .then((message) => {
-    return Message.findById(message.id).populate('user', { password: 0 }).exec()
+    return Message.findById(message.id).populate('user').exec()
   })
   .then((message) => {
     io.to(req.params.id).emit('message', message);
+    redisHelp.removeTyping(req.params.id, JSON.stringify(message.user));
     return res.sendStatus(200);
   })
   .catch((err) => {
@@ -131,7 +132,7 @@ app.post('/api/v1/rooms/:id/messages', verifyToken, function (req, res) {
 })
 
 app.get('/api/v1/rooms/:id/messages', verifyToken, function (req, res) {
-  Message.find({ room: req.params.id }).populate('user', { password: 0 }).exec(function (err, messages) {
+  Message.find({ room: req.params.id }).populate('user').exec(function (err, messages) {
     if (err) return res.sendStatus(500);
     if (!messages) return res.sendStatus(404);
     res.status(200).send(messages)
@@ -139,7 +140,7 @@ app.get('/api/v1/rooms/:id/messages', verifyToken, function (req, res) {
 })
 
 app.post('/api/v1/rooms/:id/typing', verifyToken, function (req, res) {
-  User.findById(req.userId, { password: 0 }, function (err, user) {
+  User.findById(req.userId, function (err, user) {
     if (err) return res.sendStatus(500);
     if (!user) return res.sendStatus(404);
     redisHelp.addTyping(req.params.id, JSON.stringify(user));
@@ -148,7 +149,7 @@ app.post('/api/v1/rooms/:id/typing', verifyToken, function (req, res) {
 })
 
 app.post('/login', function (req, res) {
-  User.findOne({ name: req.body.name }, function (err, user) {
+  User.findOne({ name: req.body.name }, { password: 1 }, function (err, user) {
     if (err) return res.sendStatus(500);
     if (!user) return res.sendStatus(404);
     bcrypt.compare(req.body.password, user.password, function (err, isValid) {
@@ -157,7 +158,8 @@ app.post('/login', function (req, res) {
         var token = jwt.sign({ id: user._id }, secret, {
           expiresIn: 86400
         });
-        res.status(200).send({ auth: true, token: token });
+        user.password = undefined;
+        res.status(200).send({ auth: true, token: token, user: user });
       } else {
         res.sendStatus(401);
       }
@@ -196,7 +198,7 @@ sub.on('pmessage', (pattern, channel, message) => {
 
 io.on('connection', function(socket){
   socket.on('disconnect', function(){
-    User.findById(socket.user, { password: 0 })
+    User.findById(socket.user)
     .then((user) => {
       if (!user) throw Error('Disconnect: user not found');
       redisHelp.removeUser(socket.room, JSON.stringify(user));
@@ -211,7 +213,7 @@ io.on('connection', function(socket){
       if (err) console.error(err);
       socket.user = decoded.id;
       socket.room = data.room;
-      User.findById(decoded.id, { password: 0 })
+      User.findById(decoded.id)
       .then((user) => {
         if (!user) throw Error('Connect: user not found');
         socket.join(socket.room);

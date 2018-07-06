@@ -3,6 +3,7 @@
  */
 
 export const ADD_MESSAGES = 'ADD_MESSAGES';
+export const SET_USER = 'SET_USER';
 export const SET_CURRENT_USERS = 'SET_CURRENT_USERS';
 export const SET_TYPING_USERS = 'SET_TYPING_USERS';
 export const SET_ROOM_INFO = 'SET_ROOM_INFO';
@@ -25,6 +26,10 @@ export const CREATE_ROOM_SHORTID_ERROR = 'CREATE_ROOM_SHORTID_ERROR';
 
 export function addMessages(messages) {
   return { type: ADD_MESSAGES, messages }
+}
+
+export function setUser(user) {
+  return { type: SET_USER, user }
 }
 
 export function setCurrentUsers(users) {
@@ -130,17 +135,18 @@ export function getRoomMessages(shortid) {
 
 export function auth(token) {
   return (dispatch) => {
-    return fetch("/auth", { method: 'HEAD', headers: { 'Authorization': localStorage.getItem('token') } })
+    return fetch("/auth", { method: 'GET', headers: { 'Authorization': localStorage.getItem('token') } })
     .then((result) => {
       if (result.status >= 400 && result.status < 600) {
         dispatch(loginFailure())
         return Promise.reject(result.status);
       }
       dispatch(loginSuccess())
-      return Promise.resolve(result);
+      return result.json();
     },
       error => Promise.reject(error)
     )
+    .then((data) => dispatch(setUser(data)))
   }
 }
 

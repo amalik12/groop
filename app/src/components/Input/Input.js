@@ -10,7 +10,6 @@ const mapStateToProps = (state, ownProps) => {
 	}
 }
 
-
 export class Input extends Component {
 	constructor(props) {
 	    super(props);

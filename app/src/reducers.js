@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
 import {
-  ADD_MESSAGES, SET_ROOM_INFO, SET_CURRENT_USERS, SET_TYPING_USERS,
+  ADD_MESSAGES, SET_ROOM_INFO, SET_USER, SET_CURRENT_USERS, SET_TYPING_USERS,
   MEMBERS, LOGIN_SUCCESS, LOGIN_FAILURE, LOGIN_ERROR,
   CLEAR_LOGIN_ERROR, CREATE_ROOM_START, CREATE_ROOM_FAILURE,
   CREATE_ROOM_SUCCESS, CREATE_ROOM_NAME_ERROR, CREATE_ROOM_SHORTID_ERROR, CREATE_ROOM_RESET
@@ -31,12 +31,14 @@ function room(state = { name: '', creation_time: Date.now(), current_users: [], 
   }
 }
 
-function login(state = { error: '', signed_in: false }, action) {
+function login(state = { error: '', signed_in: false, user: {} }, action) {
   switch (action.type) {
     case LOGIN_FAILURE:
       return { ...state, signed_in: false }
     case LOGIN_SUCCESS:
       return { ...state, signed_in: true }
+    case SET_USER:
+      return { ...state, user: action.user }
     case LOGIN_ERROR:
       return { ...state, error: action.text }
     case CLEAR_LOGIN_ERROR:

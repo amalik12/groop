@@ -32,12 +32,21 @@ module.exports = {
         .execAsync()
         .then((res) => {
             pub.publish(room + '_typing', JSON.stringify(res[res.length - 1]));
-            setTimeout(() => this.removeTyping(room), TYPING_EXPIRE)
+            setTimeout(() => this.clearTyping(room), TYPING_EXPIRE)
         })
         .catch((error) => console.error(error))
     },
 
-    removeTyping: function (room) {
+    removeTyping: function (room, user) {
+        pub.multi().zrem(room + '_typing', user).zrange(room + '_typing', 0, -1)
+        .execAsync()
+        .then((res) => {
+            pub.publish(room + '_typing', JSON.stringify(res[res.length - 1]));
+        })
+        .catch((error) => console.error(error))
+    },
+
+    clearTyping: function (room) {
         pub.multi().zremrangebyscore(room + '_typing', '-inf', Date.now() - TYPING_EXPIRE).zrange(room + '_typing', 0, -1)
         .execAsync()
         .then((res) => pub.publish(room + '_typing', JSON.stringify(res[res.length - 1])))
