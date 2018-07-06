@@ -1,11 +1,11 @@
-.Input {
+.input-inner {
   background: white;
   font-size: 16px;
   padding: 12px 27px;
   border-top: 1px solid #c0c0c0;
 }
 
-.input-inner {
+.input-textarea {
   border: none;
   resize: none;
   height: 1.4em;
@@ -17,6 +17,6 @@
   outline: none;
 }
 
-.input-inner::placeholder {
+.input-textarea::placeholder {
   color: #9e9e9e;
 }

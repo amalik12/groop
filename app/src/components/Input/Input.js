@@ -60,8 +60,10 @@ export class Input extends Component {
 		return (
 			<div className="Input">
 				<TypingText />
-				<textarea className="input-inner" ref={(input) => { this.textInput = input; }} onKeyPress={this.handleKeyPress} onChange={this.handleChange} placeholder="Type a message...">
-				</textarea>
+				<div className="input-inner">
+					<textarea className="input-textarea" ref={(input) => { this.textInput = input; }} onKeyPress={this.handleKeyPress} onChange={this.handleChange} placeholder="Type a message...">
+					</textarea>
+				</div>
 			</div>
 		);
 	}

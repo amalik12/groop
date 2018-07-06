@@ -1,5 +1,18 @@
-.typing-text {
-    position: absolute;
-    margin-top: -40px;
+.TypingText {
+	position: absolute;
+	background: rgba(244, 245, 255, 0.86);
+	padding: 12px 0px;
+	margin-top: -40px;
+    width: 100%;
+    opacity: 0;
+    transition: 0.4s;
+}
+
+.TypingText.visible {
+    opacity: 1;
+}
+
+.typing-message {
     font-size: 16px;
+    margin-left: 27px;
 }

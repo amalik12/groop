@@ -27,7 +27,9 @@ export const TypingText = ({typing_users}) => {
     }
 
     return (
-        <span className="typing-text">{typing_users.length > 3 ? "Several users are typing..." : users}{typing_users.length <= 3 && suffix}</span>
+        <div className={"TypingText " + (typing_users.length ? 'visible' : '')}>
+            <span className="typing-message">{typing_users.length > 3 ? "Several users are typing..." : users}{typing_users.length <= 3 && suffix}</span>
+        </div>
     );
 }
 

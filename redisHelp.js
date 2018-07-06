@@ -31,7 +31,6 @@ module.exports = {
         pub.multi().zadd(room + '_typing', Date.now(), user).zrange(room + '_typing', 0, -1)
         .execAsync()
         .then((res) => {
-            console.log(res);
             pub.publish(room + '_typing', JSON.stringify(res[res.length - 1]));
             setTimeout(() => this.removeTyping(room), TYPING_EXPIRE)
         })
@@ -41,7 +40,7 @@ module.exports = {
     removeTyping: function (room) {
         pub.multi().zremrangebyscore(room + '_typing', '-inf', Date.now() - TYPING_EXPIRE).zrange(room + '_typing', 0, -1)
         .execAsync()
-        .then((res) => { console.log(res); pub.publish(room + '_typing', JSON.stringify(res[res.length - 1])) })
+        .then((res) => pub.publish(room + '_typing', JSON.stringify(res[res.length - 1])))
         .catch((error) => console.error(error))
     }
 }
