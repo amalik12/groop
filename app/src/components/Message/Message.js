@@ -3,8 +3,13 @@ import './Message.css';
 import Avatar from '../Avatar';
 import Timestamp from '../Timestamp';
 import moment from 'moment';
+import SimpleMarkdown from 'simple-markdown';
+
+var mdParse = SimpleMarkdown.defaultBlockParse;
+var mdOutput = SimpleMarkdown.defaultReactOutput;
 
 let Message = (props) => {
+  let renderedText = mdOutput(mdParse(props.text));
   return (
     <div className="Message">
       <div className="message-left">
@@ -16,7 +21,7 @@ let Message = (props) => {
           <span className="message-time"><Timestamp time={props.creation_time} /></span>
         </div>}
         <div className="message-text">
-          {props.text}
+          {renderedText}
         </div>
       </div>
     </div>
