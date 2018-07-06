@@ -7,9 +7,9 @@ let MessageGroup = (props) => {
         <div className="MessageGroup">
             {props.messages.map((message, index) => {
                 if (index === 0) {
-                    return <Message simple={false} {...message} />
+                    return <Message simple={false} key={message._id} {...message} />
                 }
-                return <Message simple={true} {...message} />
+                return <Message simple={true} key={message._id} {...message} />
             })}
         </div>
     );

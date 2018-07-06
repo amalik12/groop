@@ -9,7 +9,7 @@ import './MembersModal.css';
 const mapStateToProps = (state, ownProps) => {
     return {
         showModal: state.modals.members,
-        members: state.room.current_users.map(user => <UserInfo user={user} />)
+        members: state.room.current_users.map(user => <UserInfo key={user._id} user={user} />)
     }
 }
 
