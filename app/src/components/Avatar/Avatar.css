@@ -2,4 +2,6 @@
   display: inline-block;
   border-radius: 50%;
   user-select: none;
+  -webkit-user-drag: none;
+  user-drag: none;
 }
