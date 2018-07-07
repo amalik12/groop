@@ -1,6 +1,7 @@
 .message-details {
   display: inline-block;
   vertical-align: top;
+  flex-grow: 1;
 }
 
 .message-sender {
@@ -13,6 +14,25 @@
   display: inline-block;
   width: 49px;
   margin-right: 12px;
+}
+
+.message-right {
+  align-self: flex-end;
+}
+
+.material-icons.reply-button {
+  color: rgba(0, 0, 0, 0.2);
+  visibility: hidden;
+  cursor: pointer;
+  user-select: none;
+}
+
+.material-icons.reply-button:hover {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.Message:hover .material-icons.reply-button {
+  visibility: visible;
 }
 
 .message-info {
@@ -30,6 +50,7 @@
 
 .Message {
   margin-bottom: 4px;
+  display: flex;
 }
 
 .message-left .message-time {

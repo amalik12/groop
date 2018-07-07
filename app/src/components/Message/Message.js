@@ -24,6 +24,11 @@ let Message = (props) => {
           {renderedText}
         </div>
       </div>
+      <div className="message-right">
+        <i class="material-icons reply-button">
+          reply
+        </i>
+      </div>
     </div>
   );
 }
