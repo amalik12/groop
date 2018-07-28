@@ -6,10 +6,11 @@ volumes:
 services:
   db:
     image: mongo:latest
-    ports:
-      - 27017:27017
     volumes:
       - db_data:/var/lib/mongodb/
+  
+  redis:
+    image: redis:latest
 
   server:
     build: ./
@@ -17,6 +18,7 @@ services:
       - 5000:5000
     links:
       - db
+      - redis
     environment:
       - TOKEN_SECRET=${TOKEN_SECRET}
       - MONGODB_URI=${MONGODB_URI}
@@ -28,4 +30,4 @@ services:
     ports:
       - 3000:3000
     links:
-      - server  
+      - server
