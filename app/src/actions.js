@@ -135,18 +135,16 @@ export function getRoomMessages(shortid) {
 
 export function auth(token) {
   return (dispatch) => {
-    return fetch("/auth", { method: 'GET', headers: { 'Authorization': localStorage.getItem('token') } })
+    return fetch("/auth", { method: 'HEAD', headers: { 'Authorization': localStorage.getItem('token') } })
     .then((result) => {
       if (result.status >= 400 && result.status < 600) {
-        dispatch(loginFailure())
+        dispatch(loginFailure());
         return Promise.reject(result.status);
       }
-      dispatch(loginSuccess())
-      return result.json();
+      dispatch(loginSuccess());
     },
       error => Promise.reject(error)
     )
-    .then((data) => dispatch(setUser(data)))
   }
 }
 

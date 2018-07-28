@@ -14,9 +14,9 @@ require('dotenv').config();
 
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
-var redisUri = process.env.REDIS_URI;
-var mongoDBUri = process.env.MONGODB_URI;
-var secret = process.env.TOKEN_SECRET;
+const redisUri = process.env.REDIS_URI;
+const mongoDBUri = process.env.MONGODB_URI;
+const secret = process.env.TOKEN_SECRET;
 
 var Room = require('./models/room.js');
 var User = require('./models/user.js');
@@ -40,17 +40,17 @@ mongoose.connect(mongoDBUri)
   .then(() => console.log('Database connection successful'))
   .catch((err) => console.error(err));
 
-http.listen(5000, function () {
+http.listen(5000, '0.0.0.0', function () {
   console.log('Listening on port 5000');
 });
 
-var NUM_AVATARS = 8;
+const NUM_AVATARS = 8;
 
-app.get('/auth', verifyToken, function (req, res) {
+app.head('/auth', verifyToken, function (req, res) {
   User.findById(req.userId, function (err, user) {
     if (err) return res.sendStatus(500);
     if (!user) return res.sendStatus(404);
-    res.status(200).send(user);
+    res.sendStatus(200);
   })
 })
 
@@ -217,6 +217,7 @@ io.on('connection', function(socket){
       .then((user) => {
         if (!user) throw Error('Connect: user not found');
         socket.join(socket.room);
+        socket.emit('set_user', decoded.id);
         redisHelp.addUser(socket.room, JSON.stringify(user));
       })
       .catch((err) => {

@@ -8,7 +8,7 @@ import thunkMiddleware from 'redux-thunk'
 import { BrowserRouter, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import chat from './reducers';
-import { addMessages, setCurrentUsers, setTypingUsers } from './actions';
+import { addMessages, setCurrentUsers, setTypingUsers, setUser } from './actions';
 import registerServiceWorker from './registerServiceWorker';
 import App from './components/App';
 import CreateRoom from './components/CreateRoom/';
@@ -26,6 +26,10 @@ socket.on('current users', function (users) {
 
 socket.on('typing', function (users) {
   store.dispatch(setTypingUsers(users))
+});
+
+socket.on('set_user', function (user) {
+  store.dispatch(setUser(user))
 });
 
 ReactDOM.render(

@@ -25,7 +25,7 @@ let Message = (props) => {
         </div>
       </div>
       <div className="message-right">
-        <i class="material-icons reply-button">
+        <i className="material-icons reply-button">
           reply
         </i>
       </div>

@@ -31,7 +31,7 @@ function room(state = { name: '', creation_time: Date.now(), current_users: [], 
   }
 }
 
-function login(state = { error: '', signed_in: false, user: {} }, action) {
+function login(state = { error: '', signed_in: false, user: '' }, action) {
   switch (action.type) {
     case LOGIN_FAILURE:
       return { ...state, signed_in: false }

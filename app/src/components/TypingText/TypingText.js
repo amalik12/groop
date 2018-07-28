@@ -9,8 +9,8 @@ const mapStateToProps = (state, ownProps) => {
     }
 }
 
-export const TypingText = ({typing_users, current_user}) => {
-    let typing_list = typing_users.filter((user) => user._id !== current_user._id);
+const TypingText = ({typing_users, current_user}) => {
+    let typing_list = typing_users.filter((user) => user._id !== current_user);
     let users = '';
     let suffix = '';
     switch (typing_list.length) {
