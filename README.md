@@ -21,11 +21,9 @@ Users are required to login to chat and view a room's messages. Clients are auth
 ### Chat
 Events (messages sent, users joining, etc.) are broadcast to the room using websockets. The chat room currently displays the room's name, creation time, logged in members, and messages (with live updating timestamps).
 
-![](https://dl.dropboxusercontent.com/s/2dbwrp3a6ea5tej/2018-03-16_01-41-44.gif)
+![](https://dl.dropboxusercontent.com/s/035mx4zzegl5zfy/2018-07-07_22-11-23.gif)
 
 ## Future Work
 
-* Backend work to support multiple rooms active simultaneously
 * Message quoting
 * Avatar uploads
-* Typing notifications
