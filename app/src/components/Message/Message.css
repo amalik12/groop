@@ -17,7 +17,10 @@
 }
 
 .message-right {
-  align-self: flex-end;
+	align-self: flex-end;
+	position: relative;
+	width: 20px;
+	height: 20px;
 }
 
 .material-icons.reply-button {
@@ -25,6 +28,7 @@
   visibility: hidden;
   cursor: pointer;
   user-select: none;
+  position: absolute;
 }
 
 .material-icons.reply-button:hover {

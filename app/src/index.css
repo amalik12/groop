@@ -15,3 +15,7 @@ h1 {
   font-weight: normal;
   font-size: 42px;
 }
+
+button::-moz-focus-inner {
+  border: 0;
+}

@@ -1,0 +1,42 @@
+.ReplyInput {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    height: 40px;
+    overflow: hidden;
+}
+
+.reply-input-inner {
+    border: 1px solid #c0c0c0;
+    border-radius: 3px;
+    width: 70%;
+    padding: 8px 12px;
+    margin-right: 5px;
+    font-size: 16px;
+    font-family: 'Source Sans Pro', sans-serif;
+}
+
+.reply-input-anim-enter {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    height: 0;
+}
+
+.reply-input-anim-enter.reply-input-anim-enter-active, .reply-input-anim-enter-done {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    height: 40px;
+    transition: 0.3s;
+}
+
+.reply-input-anim-exit {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    height: 40px;
+}
+
+.reply-input-anim-exit.reply-input-anim-exit-active, .reply-input-anim-exit-done {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    height: 0;
+    transition: 0.3s;
+}

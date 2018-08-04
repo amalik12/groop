@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux'
-import { TransitionGroup, CSSTransition } from 'react-transition-group'
+import { connect } from 'react-redux';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import './MessageList.css';
 import MessageGroup from '../MessageGroup';
 import { Scrollbars } from 'react-custom-scrollbars';

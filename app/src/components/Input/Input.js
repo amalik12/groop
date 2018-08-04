@@ -51,7 +51,6 @@ export class Input extends Component {
 			.then((result) => {},
 			(error) => {
 				console.log(error);
-				// TODO: alert user
 			});
 		}
 	}
@@ -65,7 +64,7 @@ export class Input extends Component {
 			<div className="Input">
 				<TypingText />
 				<div className="input-inner">
-					<textarea className="input-textarea" ref={(input) => { this.textInput = input; }} onKeyPress={this.handleKeyPress} onChange={this.handleChange} placeholder="Type a message...">
+					<textarea className="user-input input-textarea" ref={(input) => { this.textInput = input; }} onKeyPress={this.handleKeyPress} onChange={this.handleChange} placeholder="Type a message...">
 					</textarea>
 				</div>
 			</div>

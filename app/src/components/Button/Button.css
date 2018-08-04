@@ -31,6 +31,19 @@
 .button.primary:hover, .button.primary:hover > * {
   background: #4259b6;
 }
+
+.button.text {
+	background: none;
+	color: rgba(0, 0, 0, 0.2);
+	font-size: 16px;
+	padding: 10px 15px;
+	min-width: 0px;
+}
+
+.button.text:hover {
+  background: #e4e4e4;
+}
+
 .button.disabled {
   background: #aeaeae;
   pointer-events: none;
