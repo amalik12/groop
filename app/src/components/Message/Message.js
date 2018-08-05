@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './Message.css';
 import Avatar from '../Avatar';
 import Timestamp from '../Timestamp';
+import Quote from '../Quote/Quote';
 import ReplyInput from '../ReplyInput/ReplyInput';
 import { CSSTransition } from 'react-transition-group'
 import moment from 'moment';
@@ -33,6 +34,7 @@ class Message extends Component {
             <span className="message-sender">{this.props.user.name}</span>
             <span className="message-time"><Timestamp time={this.props.creation_time} /></span>
           </div>}
+          {this.props.quote !== undefined && <Quote {...this.props.quote}/>}
           <div className="message-text">
             {renderedText}
           </div>

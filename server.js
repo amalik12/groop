@@ -116,9 +116,9 @@ app.post('/api/v1/rooms/', function (req, res) {
 
 app.post('/api/v1/rooms/:id/messages', verifyToken, function (req, res) {
   if (!req.body || !req.body.message) return res.sendStatus(400);
-  Message.create({ text: req.body.message, user: req.userId, room: req.params.id })
+  Message.create({ text: req.body.message, user: req.userId, room: req.params.id, quote: req.body.quote })
   .then((message) => {
-    return Message.findById(message.id).populate('user').exec()
+    return Message.findById(message.id).populate('user').populate({ path: 'quote', populate: { path: 'user' } }).exec()
   })
   .then((message) => {
     io.to(req.params.id).emit('message', message);
@@ -127,12 +127,13 @@ app.post('/api/v1/rooms/:id/messages', verifyToken, function (req, res) {
   })
   .catch((err) => {
     console.error(err);
+    redisHelp.removeTyping(req.params.id, JSON.stringify(message.user));
     return res.sendStatus(500);
   })
 })
 
 app.get('/api/v1/rooms/:id/messages', verifyToken, function (req, res) {
-  Message.find({ room: req.params.id }).populate('user').exec(function (err, messages) {
+  Message.find({ room: req.params.id }).populate('user').populate({ path: 'quote', populate: { path: 'user' } }).exec(function (err, messages) {
     if (err) return res.sendStatus(500);
     if (!messages) return res.sendStatus(404);
     res.status(200).send(messages)
@@ -200,7 +201,7 @@ io.on('connection', function(socket){
   socket.on('disconnect', function(){
     User.findById(socket.user)
     .then((user) => {
-      if (!user) throw Error('Disconnect: user not found');
+      if (!user) throw Error('Disconnect: user ' + socket.user + ' not found');
       redisHelp.removeUser(socket.room, JSON.stringify(user));
     })
     .catch((err) => {

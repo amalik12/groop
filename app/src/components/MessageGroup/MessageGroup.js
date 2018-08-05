@@ -1,5 +1,4 @@
 import React from 'react';
-import '../Message/Message.css';
 import Message from '../Message';
 
 let MessageGroup = (props) => {

@@ -1,0 +1,48 @@
+.Quote {
+    font-size: 15px;
+    margin-top: 12px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    display: flex;
+    overflow: hidden;
+    align-items: stretch;
+}
+
+.quote-border {
+    background: #c5c7da;
+    width: 5px;
+}
+
+.quote-inner {
+    padding: 10px 12px;
+    display: inline-block;
+    border: 1px solid rgb(218, 218, 218);
+    border-left: none;
+    border-radius: 0px 4px 4px 0px;
+}
+
+.quote-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.quote-info .Avatar {
+    width: 25px;
+    height: 25px;
+    margin-right: 5px;
+}
+
+.quote-sender {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.quote-text {
+    margin-bottom: 10px;
+}
+
+.quote-time {
+    color: #acacad;
+    font-size: 14px;
+}

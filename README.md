@@ -25,5 +25,4 @@ Events (messages sent, users joining, etc.) are broadcast to the room using webs
 
 ## Future Work
 
-* Message quoting
 * Avatar uploads

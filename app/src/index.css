@@ -2,6 +2,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Source Sans Pro', sans-serif;
+  font-size: 16px;
   color: #3e4b5c;
 }
 
@@ -18,4 +19,5 @@ h1 {
 
 button::-moz-focus-inner {
   border: 0;
+  outline: none;
 }
