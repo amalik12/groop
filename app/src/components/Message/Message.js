@@ -41,7 +41,7 @@ class Message extends Component {
             in={this.state.replying}
             classNames="reply-input-anim"
             timeout={200}>
-            <ReplyInput toggleReply={this.toggleReply}/>
+            <ReplyInput toggleReply={this.toggleReply} id={this.props._id}/>
           </CSSTransition>
         </div>
         <div className="message-right">

@@ -20,3 +20,7 @@
 .user-input::placeholder {
   color: #9e9e9e;
 }
+
+.user-input:focus {
+  outline: none;
+}

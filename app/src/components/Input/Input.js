@@ -10,7 +10,7 @@ const mapStateToProps = (state, ownProps) => {
 	}
 }
 
-export class Input extends Component {
+class Input extends Component {
 	constructor(props) {
 	    super(props);
 		this.handleKeyPress = this.handleKeyPress.bind(this);
@@ -48,8 +48,7 @@ export class Input extends Component {
 		} else if (Date.now() - this.lastTyping > this.typeInterval) {
 			this.lastTyping = Date.now();
 			fetch("/api/v1/rooms/" + this.props.room_id + "/typing", { method: 'POST', headers: myHeaders })
-			.then((result) => {},
-			(error) => {
+			.catch((error) => {
 				console.log(error);
 			});
 		}
