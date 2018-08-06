@@ -14,9 +14,10 @@ require('dotenv').config();
 
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
-const redisUri = process.env.REDIS_URI;
+const redisUrl = process.env.REDIS_URL;
 const mongoDBUri = process.env.MONGODB_URI;
 const secret = process.env.TOKEN_SECRET;
+const port = process.env.PORT || 5000;
 
 var Room = require('./models/room.js');
 var User = require('./models/user.js');
@@ -25,11 +26,8 @@ var Message = require('./models/message.js');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'build')));
-app.get('/', function(req, res){
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
 
-var sub = redis.createClient(redisUri);
+var sub = redis.createClient(redisUrl);
 sub.on("error", function (err) {
   console.log("Error " + err);
 });
@@ -40,15 +38,18 @@ mongoose.connect(mongoDBUri)
   .then(() => console.log('Database connection successful'))
   .catch((err) => console.error(err));
 
-http.listen(5000, '0.0.0.0', function () {
-  console.log('Listening on port 5000');
+http.listen(port, '0.0.0.0', function () {
+  console.log('Listening on port ' + port);
 });
 
 const NUM_AVATARS = 8;
 
 app.head('/auth', verifyToken, function (req, res) {
   User.findById(req.userId, function (err, user) {
-    if (err) return res.sendStatus(500);
+    if (err) {
+      console.error(err);
+      return res.sendStatus(500);
+    }
     if (!user) return res.sendStatus(404);
     res.sendStatus(200);
   })
@@ -184,6 +185,10 @@ app.post('/register', function (req, res) {
     });
   });
 })
+
+app.get('/*', function (req, res) {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
 
 sub.on('pmessage', (pattern, channel, message) => {
   if (pattern === '*_users') {

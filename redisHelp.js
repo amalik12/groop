@@ -1,7 +1,7 @@
 var redis = require("redis");
 var promise = require("bluebird");
 
-const redisUri = process.env.REDIS_URI;
+const redisUrl = process.env.REDIS_URL;
 
 // Remove members from typing list after 5 seconds
 const TYPING_EXPIRE = 5000;
@@ -9,7 +9,7 @@ const TYPING_EXPIRE = 5000;
 promise.promisifyAll(redis.RedisClient.prototype);
 promise.promisifyAll(redis.Multi.prototype);
 
-var pub = redis.createClient(redisUri);
+var pub = redis.createClient(redisUrl);
 pub.on("error", function (err) {
     console.log("Error " + err);
 });

@@ -1,4 +1,8 @@
 app
+!app/build
+mock.png
+notes.txt
+default-avatar.psd
 node_modules
 npm-debug.log
 Dockerfile*
