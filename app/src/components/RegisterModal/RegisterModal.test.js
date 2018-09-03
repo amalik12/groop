@@ -2,7 +2,7 @@ import React from 'react';
 import Enzyme, { shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 
-import RegisterModal from './RegisterModal';
+import { RegisterModal } from './RegisterModal';
 import FormModal from '../FormModal';
 import TextField from '../TextField';
 
@@ -11,10 +11,9 @@ Enzyme.configure({ adapter: new Adapter() });
 describe('<RegisterModal />', () => {
     let props = {
         showModal: true,
-        submitted: false,
         error: '',
         switch: jest.fn(),
-        setError: jest.fn()
+        clearLoginError: jest.fn(),
     }
 
     describe('has a <FormModal /> component', () => {
@@ -30,7 +29,6 @@ describe('<RegisterModal />', () => {
         it('that takes the necessary props', () => {
             let formModal = wrapper.find(FormModal).first();
             expect(formModal.props().showModal).toEqual(props.showModal);
-            expect(formModal.props().submitted).toEqual(props.submitted);
             expect(formModal.props().loading).toEqual(wrapper.state().loading);
             expect(formModal.props().enabled).toEqual(wrapper.state().usernameValid && wrapper.state().passwordValid);
             expect(formModal.props().submit).toBe(wrapper.instance().submit);
@@ -47,18 +45,16 @@ describe('<RegisterModal />', () => {
             let username = wrapper.find(TextField).first();
             let password = wrapper.find(TextField).at(1);
             let confirm = wrapper.find(TextField).last();
-            expect(username.props().label).toEqual('Username');
+            
             expect(username.props().handleChange).toEqual(wrapper.instance().handleUsernameChange);
             expect(username.props().value).toEqual(wrapper.state().username);
             expect(username.props().errorText).toEqual(props.error);
 
-            expect(password.props().label).toEqual('Password');
             expect(password.props().handleChange).toEqual(wrapper.instance().handlePasswordChange);
             expect(password.props().value).toEqual(wrapper.state().password);
             expect(password.props().errorText).toEqual(wrapper.state().passwordError);
             expect(password.props().password).toBe(true);
 
-            expect(confirm.props().label).toEqual('Confirm password');
             expect(confirm.props().handleChange).toEqual(wrapper.instance().handlePasswordChange);
             expect(password.props().value).toEqual(wrapper.state().confirm);
             expect(password.props().password).toBe(true);
@@ -92,8 +88,8 @@ describe('<RegisterModal />', () => {
             expect(wrapper.state().usernameValid).toBe(false);
         });
 
-        it('that calls setError', () => {
-            expect(props.setError.mock.calls.length).toBe(1);
+        it('that calls clearLoginError', () => {
+            expect(props.clearLoginError.mock.calls.length).toBe(1);
         });
     });
 

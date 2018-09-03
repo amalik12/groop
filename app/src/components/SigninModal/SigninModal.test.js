@@ -10,7 +10,11 @@ Enzyme.configure({ adapter: new Adapter() });
 
 describe('<SigninModal />', () => {
     let props = {
-        showModal: true
+        showModal: true,
+        error: '',
+        socket: {},
+        callback: jest.fn(),
+        clearLoginError: jest.fn()
     }
 
     describe('has an outer div', () => {
@@ -31,16 +35,18 @@ describe('<SigninModal />', () => {
             wrapper.instance().switchModal();
             wrapper.update();
             expect(wrapper.find(RegisterModal).length).toBe(1);
+            expect(props.clearLoginError.mock.calls.length).toBe(1);
         });
 
         it('that takes the necessary props', () => {
             let modal = wrapper.find(RegisterModal).first();
             expect(modal.props().showModal).toEqual(props.showModal);
             expect(modal.props().signin).toEqual(wrapper.instance().signin);
+            expect(modal.props().socket).toEqual(props.socket);
+            expect(modal.props().callback).toEqual(props.callback);
             expect(modal.props().switch).toEqual(wrapper.instance().switchModal);
-            expect(modal.props().setError).toEqual(wrapper.instance().setError);
-            expect(modal.props().submitted).toEqual(wrapper.state().submitted);
-            expect(modal.props().error).toEqual(wrapper.state().error);
+            expect(modal.props().clearLoginError).toEqual(props.clearLoginError);
+            expect(modal.props().error).toEqual(props.error);
 
             wrapper.instance().switchModal();
             wrapper.update();
@@ -48,16 +54,13 @@ describe('<SigninModal />', () => {
             modal = wrapper.find(LoginModal).first();
             expect(modal.props().showModal).toEqual(props.showModal);
             expect(modal.props().signin).toEqual(wrapper.instance().signin);
+            expect(modal.props().socket).toEqual(props.socket);
+            expect(modal.props().callback).toEqual(props.callback);
             expect(modal.props().switch).toEqual(wrapper.instance().switchModal);
-            expect(modal.props().setError).toEqual(wrapper.instance().setError);
+            expect(modal.props().clearLoginError).toEqual(props.clearLoginError);
             expect(modal.props().submitted).toEqual(wrapper.state().submitted);
-            expect(modal.props().error).toEqual(wrapper.state().error);
+            expect(modal.props().error).toEqual(props.error);
         });
     });
 
-    it('correctly sets its error prop', () => {
-        const wrapper = shallow(<SigninModal {...props} />);
-        wrapper.instance().setError('words');
-        expect(wrapper.state().error).toEqual('words');
-    });
 });

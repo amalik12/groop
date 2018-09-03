@@ -4,7 +4,7 @@ import Button from '../Button';
 
 let FormModal = (props) => {
     return (
-        <Modal showModal={props.showModal} dismissable={false} submitted={props.submitted} title={props.title}>
+        <Modal showModal={props.showModal} dismissable={false} submitted={!props.showModal} title={props.title}>
             <div className="modal-body">
                 {props.children}
             </div>

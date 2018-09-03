@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import CreateRoomForm from './CreateRoomForm';
 import SigninModal from '../SigninModal';
-import { createRoom, setNameError, setShortidError, checkShortid, createRoomReset } from '../../actions';
+import { createRoom, setNameError, setShortidError, checkShortid, createRoomReset, auth } from '../../actions';
 
 export const NAME_LABEL = "Your room name";
 export const SHORTID_LABEL = "<random url>";
@@ -14,6 +14,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
+        auth: (token) => dispatch(auth(token)),
         createRoom: (name, shortid) => dispatch(createRoom(name, shortid)),
         checkShortid: (shortid) => dispatch(checkShortid(shortid)),
         setNameError: (text) => dispatch(setNameError(text)),
@@ -22,7 +23,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     }
 }
 
-class CreateRoom extends Component {
+export class CreateRoom extends Component {
     constructor(props) {
         super(props);
         this.state = { name: '', shortid: '', enabled: true };
@@ -36,13 +37,17 @@ class CreateRoom extends Component {
         this.props.createRoomReset();
     }
 
+    componentDidMount() {
+        this.props.auth(localStorage.getItem('token')).catch((error) => console.error(error));
+    }
+
     handleChange(event) {
         clearTimeout(this.shortidTimer);
         if (event.target.name === NAME_LABEL) {
             this.setState({ name: event.target.value.toLowerCase() });
             this.props.setNameError('');
         } else {
-            this.setState({ shortid: event.target.value.toLowerCase() });
+            this.setState({ shortid: event.target.value });
             this.shortidTimer = setTimeout(this.checkShortid, 700);
         }
     }
@@ -52,7 +57,6 @@ class CreateRoom extends Component {
             this.props.setShortidError('URL contains invalid characters');
         } else {
             this.props.setShortidError('')
-            
             if (this.state.shortid) this.props.checkShortid(this.state.shortid).catch((error) => console.error(error));
         }  
     }
@@ -70,7 +74,8 @@ class CreateRoom extends Component {
             <div>
                 <SigninModal socket={this.props.socket} />
                 <CreateRoomForm name={this.state.name} shortid={this.state.shortid} loading={this.props.loading} handleChange={this.handleChange}
-                    handleKeyPress={this.handleKeyPress} submit={this.submit} enabled={this.state.name && !this.props.name_error && !this.props.shortid_error} name_error={this.props.name_error} shortid_error={this.props.shortid_error} />
+                submit={this.submit} enabled={this.state.name && !this.props.name_error && !this.props.shortid_error}
+                    name_error={this.props.name_error} shortid_error={this.props.shortid_error} />
                 {this.props.done && <Redirect push to={"/" + this.props.new_shortid} />}
             </div>
         );

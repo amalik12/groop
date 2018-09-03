@@ -3,7 +3,6 @@ import Enzyme, { shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 
 import Button from './Button';
-import ReactModal from 'react-modal';
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -12,7 +11,10 @@ describe('<Button />', () => {
         onClick: jest.fn(),
         loading: false
     }
-    const wrapper = shallow(<Button {...props}/>);
+    let wrapper;
+    beforeEach(() => {
+        wrapper = shallow(<Button {...props} />);
+    })
     
     it('renders a button', () => {
         expect(wrapper.find('button').length).toBe(1);
@@ -30,8 +32,8 @@ describe('<Button />', () => {
 
     it('adds a class if modal prop is true', () => {
         expect(wrapper.find('button').props().className).toBe('button primary');
-        wrapper.setProps({ enabled: modal });
-        expect(wrapper.find('button').props().className).toBe('button primary modal');
+        wrapper.setProps({ modal: true });
+        expect(wrapper.find('button').props().className).toBe('button primary button-modal');
     });
 
     it('displays a loader if loading prop is true', () => {

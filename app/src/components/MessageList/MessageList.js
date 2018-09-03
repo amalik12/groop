@@ -4,6 +4,7 @@ import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import './MessageList.css';
 import MessageGroup from '../MessageGroup';
 import { Scrollbars } from 'react-custom-scrollbars';
+import moment from 'moment';
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -32,7 +33,7 @@ export class MessageList extends Component {
     for (let index = 0; index < this.props.messages.length; index++) {
       let message = this.props.messages[index];
       if (prev !== null && (prev.user._id !== message.user._id ||
-        (Date.parse(message.creation_time) - Date.parse(prev.creation_time)) / 1000 / 60 > 30)) {
+        moment(message.creation_time).diff(moment(prev.creation_time), "minutes") > 30)) {
           // create a separaate message group if not from same author or not in 30 min period
           messages.push(<CSSTransition
             key={numGroups}
@@ -54,7 +55,7 @@ export class MessageList extends Component {
         timeout={200}>
           <MessageGroup messages={group} />
         </CSSTransition>)
-
+    
     return (
       <Scrollbars
       renderThumbVertical={props => <div {...this.props} dispatch={null} className="thumb-vertical"/>}

@@ -93,7 +93,7 @@ describe('<TextField />', () => {
 
     it('sets the focused class if focused', () => {
         wrapper.find('input').simulate('focus');
-        expect(wrapper.find('label').first().props().className).toBe('textfield-label textfield-label-focused');
+        expect(wrapper.find('label').first().props().className).toBe('textfield-label focused');
         wrapper.find('input').simulate('blur');
         expect(wrapper.find('label').first().props().className).toBe('textfield-label');
     });

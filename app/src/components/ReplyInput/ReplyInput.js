@@ -9,7 +9,7 @@ const mapStateToProps = (state, ownProps) => {
     }
 }
 
-class ReplyInput extends Component {
+export class ReplyInput extends Component {
     constructor(props) {
         super(props);
         this.handleKeyPress = this.handleKeyPress.bind(this);

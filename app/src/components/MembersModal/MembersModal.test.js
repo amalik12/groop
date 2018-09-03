@@ -5,7 +5,6 @@ import Adapter from 'enzyme-adapter-react-16';
 import { MembersModal } from './MembersModal';
 import Modal from '../Modal';
 
-import { Scrollbars } from 'react-custom-scrollbars';
 import Avatar from '../Avatar';
 
 Enzyme.configure({ adapter: new Adapter() });
@@ -16,8 +15,10 @@ describe('<MembersModal />', () => {
             showModal: true,
             dismiss: jest.fn()
         }
+        
         const wrapper = shallow(<MembersModal {...props}/>);
         let modal = wrapper.find(Modal).first();
+
         it('that is rendered', () => {
             expect(wrapper.find(Modal).length).toBe(1);
         });
@@ -36,8 +37,9 @@ describe('<MembersModal />', () => {
         let props = {
             showModal: true,
             dismiss: jest.fn(),
-            members: [<Avatar user={{avatar: 'Joe'}}/>]
+            members: [<Avatar key={1} user={{avatar: 'Joe'}}/>]
         }
+        
         const wrapper = shallow(<MembersModal {...props}/>);
         it('that is rendered', () => {
             expect(wrapper.find('.modal-body').length).toBe(1);

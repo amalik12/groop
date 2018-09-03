@@ -11,8 +11,7 @@ import MembersModal from '../MembersModal';
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    isLoggedIn: state.login.signed_in,
-    shortid: state.room.shortid
+    isLoggedIn: state.login.signed_in
   }
 }
 
@@ -24,7 +23,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   }
 }
 
-class App extends Component {
+export class App extends Component {
   constructor(props) {
     super(props);
     this.initChat = this.initChat.bind(this);

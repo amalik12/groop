@@ -10,10 +10,10 @@ let Modal = (props) => {
         className={"modal" + (props.submitted ? " confirm" : "")}
         closeTimeoutMS={200}
         onRequestClose={props.dismiss}
-        shouldCloseOnOverlayClick={props.dismissable}>
+        shouldCloseOnOverlayClick={props.dismiss !== undefined}>
             <div className="modal-header">
                 <span className="modal-title">{props.title}</span>
-                {props.dismissable && <i onClick={props.dismiss} className="modal-close material-icons">close</i>}
+                {props.dismiss && <i onClick={props.dismiss} className="modal-close material-icons">close</i>}
             </div>
             {props.children}
         </ReactModal>

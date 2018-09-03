@@ -9,7 +9,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-class LoginModal extends Component {
+export class LoginModal extends Component {
   constructor(props) {
     super(props);
     this.state = {username: '', password: '', loading: false};
@@ -51,7 +51,7 @@ class LoginModal extends Component {
   
   render() {
     return (
-      <FormModal title="Login" showModal={this.props.showModal} submitted={!this.props.showModal} submit={this.submit} loading={this.state.loading} enabled={this.state.username && this.state.password}>
+      <FormModal title="Login" showModal={this.props.showModal} submit={this.submit} loading={this.state.loading} enabled={this.state.username && this.state.password}>
         <TextField label="Username" onKeyPress={this.handleKeyPress} value={this.state.username} handleChange={this.handleChange} errorText={this.props.error}/>
         <TextField label="Password" onKeyPress={this.handleKeyPress} password={true} value={this.state.password} handleChange={this.handleChange} />
         <span className="link" onClick={this.props.switch}>Create an account</span>

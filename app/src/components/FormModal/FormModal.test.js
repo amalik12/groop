@@ -2,12 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Enzyme, { shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-import { createStore } from 'redux';
-import { Provider } from 'react-redux';
 
 import FormModal from './FormModal';
 import Modal from '../Modal';
-import ModalButton from '../Modal/ModalButton';
+import Button from '../Button';
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -18,25 +16,20 @@ describe('<FormModal />', () => {
         ReactDOM.render(<FormModal />, div);
     });
 
-    it('renders a <Modal /> component', () => {
-        const wrapper = shallow(<FormModal />);
-        expect(wrapper.find(Modal).length).toBe(1);
-    });
+    describe('has a <Modal /> component', () => {
+        const wrapper = shallow(<FormModal {...props} />);
+        it('that is rendered', () => {
+            expect(wrapper.find(Modal).length).toBe(1);
+        });
 
-    it('renders a <Modal /> component that contains everything else', () => {
-        const wrapper = shallow(<FormModal />);
-        expect(wrapper.find(Modal).first().children()).toEqual(wrapper.children());
+        it('that contains everything else', () => {
+            expect(wrapper.find(Modal).first().children()).toEqual(wrapper.children());
+        });
     });
 
     it('renders a .modal-body', () => {
         const wrapper = shallow(<FormModal />);
         expect(wrapper.find('.modal-body').length).toBe(1);
-    });
-
-    it('renders its children inside the .modal-body', () => {
-        let child = <div>text</div>;
-        const wrapper = shallow(<FormModal>{child}</FormModal>);
-        expect(wrapper.find('.modal-body').first().contains(child)).toBe(true);
     });
 
     it('passes the necessary props to the <Modal /> component', () => {
@@ -51,21 +44,22 @@ describe('<FormModal />', () => {
         expect(wrapper.find('.modal-footer').length).toBe(1);
     });
 
-    it('renders a <ModalButton /> component', () => {
+    it('renders a <Button /> component', () => {
         const wrapper = shallow(<FormModal />);
-        expect(wrapper.find(ModalButton).length).toBe(1);
+        expect(wrapper.find(Button).length).toBe(1);
     });
 
-    it('passes the necessary props to the <ModalButton /> component', () => {
+    it('passes the necessary props to the <Button /> component', () => {
         props = {
             submit: jest.fn(),
             loading: false,
             enabled: true
         }
         const wrapper = shallow(<FormModal {...props} />);
-        expect(wrapper.find(ModalButton).props().onClick).toEqual(props.submit);
-        expect(wrapper.find(ModalButton).props().loading).toBe(props.loading);
-        expect(wrapper.find(ModalButton).props().enabled).toBe(props.enabled);
+        expect(wrapper.find(Button).props().onClick).toEqual(props.submit);
+        expect(wrapper.find(Button).props().loading).toBe(props.loading);
+        expect(wrapper.find(Button).props().enabled).toBe(props.enabled);
+        expect(wrapper.find(Button).props().modal).toBe(true);
     });
 
     it('renders children when passed in', () => {

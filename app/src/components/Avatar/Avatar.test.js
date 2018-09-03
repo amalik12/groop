@@ -2,8 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Enzyme, { shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-import { createStore } from 'redux';
-import { Provider } from 'react-redux';
 import Avatar from './Avatar';
 
 Enzyme.configure({ adapter: new Adapter() });

@@ -10,11 +10,12 @@ const mapStateToProps = (state, ownProps) => {
 	}
 }
 
-class Input extends Component {
+export class Input extends Component {
 	constructor(props) {
 	    super(props);
 		this.handleKeyPress = this.handleKeyPress.bind(this);
 		this.handleChange = this.handleChange.bind(this);
+		this.textInput = {style: {}}
 	}
 
 	componentDidMount() {

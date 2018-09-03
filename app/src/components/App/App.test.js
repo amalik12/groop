@@ -1,5 +1,5 @@
 import React from 'react';
-import App from './App';
+import { App } from './App';
 import Enzyme, { shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 
@@ -13,10 +13,24 @@ Enzyme.configure({ adapter: new Adapter() });
 
 describe('<App />', () => {
   let socket = { name: '' };
-  const wrapper = shallow(<App socket={socket}/>);
+  let location = { pathname: '/fddss'}
+  let props = {
+    auth: jest.fn(() => new Promise((resolve, reject) => {})),
+    getRoomInfo: jest.fn(() => new Promise((resolve, reject) => {})),
+    getRoomMessages: jest.fn(() => new Promise((resolve, reject) => {})),
+    isLoggedIn: false
+  }
+  
+  const wrapper = shallow(<App {...props} location={location} socket={socket}/>);
 
-  it('renders its outer div', () => {
-    expect(wrapper.find('.App').length).toBe(1);
+  describe('has a .App', () => {
+    it('that is rendered', () => {
+      expect(wrapper.find('.App').length).toBe(1);
+    });
+
+    it('that contains everything else', () => {
+      expect(wrapper.find('.App').first().children()).toEqual(wrapper.children());
+    });
   });
 
   it('renders a <SigninModal /> component', () => {

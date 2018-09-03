@@ -83,7 +83,7 @@ export class RegisterModal extends Component {
     
     render() {
         return (
-            <FormModal title="Register" showModal={this.props.showModal} submitted={!this.props.showModal}
+            <FormModal title="Register" showModal={this.props.showModal}
             submit={this.submit} loading={this.state.loading} enabled={this.state.usernameValid && this.state.passwordValid}>
                 <TextField label="Username" value={this.state.username} handleChange={this.handleUsernameChange}
                 errorText={this.props.error} />

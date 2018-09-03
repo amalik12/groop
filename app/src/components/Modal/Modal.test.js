@@ -12,7 +12,6 @@ describe('<Modal />', () => {
         showModal: true,
         submitted: false,
         dismiss: jest.fn(),
-        dismissable: false,
         title: 'Modal',
 
     }
@@ -29,7 +28,7 @@ describe('<Modal />', () => {
         it('that is passed required props', () => {
             expect(wrapper.find(ReactModal).props().isOpen).toEqual(props.showModal);
             expect(wrapper.find(ReactModal).props().onRequestClose).toEqual(props.dismiss);
-            expect(wrapper.find(ReactModal).props().shouldCloseOnOverlayClick).toEqual(props.dismissable);
+            expect(wrapper.find(ReactModal).props().shouldCloseOnOverlayClick).toEqual(props.dismiss !== undefined);
         });
 
         it('that sets its className based on the submitted prop', () => {
@@ -53,9 +52,9 @@ describe('<Modal />', () => {
 
     it('only displays the close button if dismissable prop is true', () => {
         const wrapper = shallow(<Modal {...props} />);
-        expect(wrapper.find('.modal-close').length).toBe(0);
-        wrapper.setProps({dismissable: true});
         expect(wrapper.find('.modal-close').length).toBe(1);
+        wrapper.setProps({ dismiss: undefined });
+        expect(wrapper.find('.modal-close').length).toBe(0);
     });
 
     it('renders children', () => {
