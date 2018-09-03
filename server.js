@@ -92,7 +92,7 @@ app.get('/api/v1/rooms/:id', function (req, res) {
   })
 })
 
-app.post('/api/v1/rooms/', function (req, res) {
+app.post('/api/v1/rooms/', verifyToken, function (req, res) {
   if (!req.body || !req.body.name) return res.sendStatus(400);
   let shortid;
   let count;

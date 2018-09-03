@@ -135,7 +135,7 @@ export function getRoomMessages(shortid) {
 
 export function auth(token) {
   return (dispatch) => {
-    return fetch("/auth", { method: 'HEAD', headers: { 'Authorization': localStorage.getItem('token') } })
+    return fetch("/auth", { method: 'HEAD', headers: { 'Authorization': token } })
     .then((result) => {
       if (result.status >= 400 && result.status < 600) {
         dispatch(loginFailure());

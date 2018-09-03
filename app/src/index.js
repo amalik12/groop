@@ -4,7 +4,7 @@ import 'normalize.css';
 import './index.css';
 import io from 'socket.io-client';
 import { createStore, applyMiddleware } from 'redux';
-import thunkMiddleware from 'redux-thunk'
+import thunkMiddleware from 'redux-thunk';
 import { BrowserRouter, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import chat from './reducers';
@@ -36,7 +36,6 @@ ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
       <div>
-        {/* <Route exact path='/' component={Home} /> */}
         <Route exact path='/' component={CreateRoom} />
         <Route path='/:id' render={(props) => <App {...props} socket={socket} />} />
       </div>
